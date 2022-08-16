@@ -8,9 +8,8 @@ import com.bilalfazlani.JsltSyntax.*
 
 val input =
   """{"name": "bilal",
-    |"age": false,
-    |
-    |"address": true}
+    |"rank": 24.5,
+    |"age": 2}
     |""".stripMargin.trim
 
 @main def main(): Unit = {

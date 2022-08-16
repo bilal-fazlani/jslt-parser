@@ -51,8 +51,29 @@ object JsltSyntax {
       (jslt: Jslt) => jslt.asInstanceOf[JBoolean].value.toString
     )
 
+  val jDoubleSyntax: Syntax[String, Char, Char, Jslt] =
+
+    def toDouble(d: (Chunk[Char], Option[Chunk[Char]])): Double = d match {
+      case (chunk, None) => chunk.mkString.toDouble
+      case (chunk, Some(chunk2)) =>
+        (chunk.mkString + "." + chunk2.mkString).toDouble
+    }
+
+    def toString(jNumber: JNumber): (Chunk[Char], Option[Chunk[Char]]) =
+      jNumber.value.toString.split(".").toList match {
+        case h :: Nil => (Chunk.fromIterable(h), None)
+        case h :: t :: Nil =>
+          (Chunk.fromIterable(h), Some(Chunk.fromIterable(t)))
+      }
+
+    (digit.repeat ~ (literal(".").unit(".") ~ digit.repeat).optional)
+      .transform[Jslt](
+        x => JNumber(toDouble(x)),
+        (jslt: Jslt) => toString(jslt.asInstanceOf[JNumber])
+      )
+
   def jsltSyntax: Syntax[Any, Char, Any, Jslt] =
-    jBooleanSyntax <> jStringSyntax
+    jBooleanSyntax <> jDoubleSyntax <> jStringSyntax
 
   val keySyntax: Syntax[Any, Char, Any, String] =
     alphanumericString.quoted
