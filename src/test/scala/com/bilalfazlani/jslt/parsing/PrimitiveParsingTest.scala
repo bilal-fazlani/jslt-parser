@@ -4,8 +4,9 @@ import com.bilalfazlani.jslt.parsing.JPrimitive.*
 import com.bilalfazlani.jslt.parsing.Jslt.*
 import zio.test.*
 import zio.test.Assertion.*
+import zio.test.junit.JUnitRunnableSpec
 
-object PrimitiveParsingTest extends ZIOSpecDefault {
+class PrimitiveParsingTest extends JUnitRunnableSpec {
   def spec = suite("PrimitiveParsingTest")(
     test("parse integer") {
       val actual = Jslt.parse("123")

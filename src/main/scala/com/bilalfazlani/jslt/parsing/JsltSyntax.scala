@@ -13,6 +13,8 @@ object JsltSyntax {
   val optionalWhitespace: Syntax[String, Char, Char, Unit] =
     whitespace.repeat0.unit(Chunk.empty)
 
+  val acceptableChars: Syntax[String, Char, Char, Char] = charIn("_-")
+
   val anyStringCustom: Syntax[String, Char, Char, String] =
     Syntax.notChar('"').repeat.transform(_.mkString, Chunk.fromIterable)
 
@@ -45,6 +47,19 @@ object JsltSyntax {
         x => JValue(JPrimitive.JString(x)),
         (jslt: Jslt) => jslt.asInstanceOf[JPrimitive.JString].value
       )
+
+  def jPathSyntax: Syntax[String, Char, Char, Jslt] =
+    literal(".").unit(".") ~ (alphaNumeric <> acceptableChars).repeat
+      .transform(
+        _.mkString,
+        (str: String) => Chunk.fromIterable(str)
+      )
+      .repeatWithSep(literal(".").unit("."))
+      .transform(
+        strs => JPath(Chunk.fromIterable(strs.map(JsltNode.apply))),
+        (path: JPath) => path.nodes.map(_.toString)
+      )
+      .widen[Jslt]
 
   def jBooleanSyntax: Syntax[String, Char, Char, Jslt] = Syntax
     .oneOf(literal("true"), literal("false"))
@@ -95,7 +110,7 @@ object JsltSyntax {
     jStringSyntax <> jBooleanSyntax <> jDoubleSyntax <> jIntegerSyntax
 
   def jArraySyntax: Syntax[Any, Char, Any, Jslt] =
-    (jPrimitiveSyntax <> jObjectSyntax)
+    (jPrimitiveSyntax <> jObjectSyntax <> jPathSyntax)
       .repeatWithSep(
         optionalWhitespace ~ comma ~ optionalWhitespace
       )
@@ -106,7 +121,7 @@ object JsltSyntax {
       )
 
   def jsltSyntax: Syntax[Any, Char, Any, Jslt] =
-    jArraySyntax <> jObjectSyntax <> jPrimitiveSyntax
+    jArraySyntax <> jObjectSyntax <> jPrimitiveSyntax <> jPathSyntax
 
   val keySyntax: Syntax[Any, Char, Any, String] =
     anyStringCustom.quoted
