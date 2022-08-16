@@ -15,6 +15,8 @@ object JsltSyntax {
 
   val acceptableChars: Syntax[String, Char, Char, Char] = charIn("_-")
 
+  val newLine = char('\n')
+
   val anyStringCustom: Syntax[String, Char, Char, String] =
     Syntax.notChar('"').repeat.transform(_.mkString, Chunk.fromIterable)
 
@@ -120,6 +122,33 @@ object JsltSyntax {
         (jslt: Jslt) => jslt.asInstanceOf[JArray].items
       )
 
+  val importSyntax = (literal("import").unit("import")
+    ~ optionalWhitespace
+    ~ anyStringCustom.quoted
+    ~ optionalWhitespace
+    ~ literal("as").unit("as")
+    ~ optionalWhitespace
+    ~ anyChar
+      .repeatUntil(newLine)
+      .transform(
+        x => x.mkString,
+        (str: String) => Chunk.fromIterable(str)
+      )).transform(
+    { case (path, name) =>
+      JsltImport(path, name)
+    },
+    (jImport: JsltImport) => (jImport.path, jImport.name)
+  )
+
+  val fileSyntax =
+    (importSyntax.repeatWithSep0(newLine) ~ optionalWhitespace ~ jObjectSyntax)
+      .transform(
+        { case (imports, obj) =>
+          JsltFile(imports, obj.asInstanceOf[JObject])
+        },
+        (jslt: JsltFile) => (jslt.jsltImports, jslt.content)
+      )
+
   def jsltSyntax: Syntax[Any, Char, Any, Jslt] =
     jArraySyntax <> jObjectSyntax <> jPrimitiveSyntax <> jPathSyntax
 
@@ -141,4 +170,5 @@ object JsltSyntax {
         items => JObject(items.toMap),
         (obj: Jslt) => Chunk.fromIterable(obj.asInstanceOf[JObject].items)
       )
+
 }
