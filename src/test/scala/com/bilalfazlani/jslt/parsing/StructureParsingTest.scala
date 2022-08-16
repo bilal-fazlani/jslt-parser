@@ -179,8 +179,7 @@ class StructureParsingTest extends JUnitRunnableSpec {
     },
     test("parse array of paths with new lines") {
       val input =
-        """
-          |[
+        """[
           |  .home.john,
           |  .home.john.age,
           |  .home.john.rank
@@ -198,8 +197,7 @@ class StructureParsingTest extends JUnitRunnableSpec {
     },
     test("parse array of strings with new lines") {
       val input =
-        """
-            |[
+        """[
             |  "john",
             |  "john's age",
             |  "john's rank"
@@ -217,8 +215,7 @@ class StructureParsingTest extends JUnitRunnableSpec {
     },
     test("parse array of integers on new lines") {
       val input =
-        """
-            |[
+        """[
             |  1,
             |  2,
             |  3
@@ -236,8 +233,7 @@ class StructureParsingTest extends JUnitRunnableSpec {
     },
     test("parse array of objects on new lines") {
       val input =
-        """
-                |[
+        """[
                 |  { "name": "john", "age": 30.2, "rank": 2, "is_admin": true, "address": { "street": "street1", "city": "city1" } },
                 |  { "name": "john", "age": 30.2, "rank": 2, "is_admin": true, "address": { "street": "street1", "city": "city1" } }
                 |]
