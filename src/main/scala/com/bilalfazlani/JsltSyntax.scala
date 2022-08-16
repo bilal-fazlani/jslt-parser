@@ -37,12 +37,22 @@ object JsltSyntax {
       ~ literal("}").unit("}")
   }
 
-  val jStringSyntax: Syntax[Any, Char, Any, JString] =
+  val jStringSyntax: Syntax[Any, Char, Any, Jslt] =
     anyStringCustom.quoted
-      .transform(JString.apply, _.value)
+      .transform(
+        JString.apply,
+        (jslt: Jslt) => jslt.asInstanceOf[JString].value
+      )
+
+  val jBooleanSyntax: Syntax[String, Char, Char, Jslt] = Syntax
+    .oneOf(literal("true"), literal("false"))
+    .transform[Jslt](
+      x => JBoolean(x.toBoolean),
+      (jslt: Jslt) => jslt.asInstanceOf[JBoolean].value.toString
+    )
 
   def jsltSyntax: Syntax[Any, Char, Any, Jslt] =
-    jStringSyntax.transform(identity, _.asInstanceOf[JString])
+    jBooleanSyntax <> jStringSyntax
 
   val keySyntax: Syntax[Any, Char, Any, String] =
     alphanumericString.quoted
