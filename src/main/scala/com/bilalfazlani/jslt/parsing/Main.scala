@@ -1,10 +1,10 @@
-package com.bilalfazlani
+package com.bilalfazlani.jslt.parsing
 
 import zio.parser.*
 import zio.parser.Syntax.*
 import zio.Chunk
 import Syntax.*
-import com.bilalfazlani.JsltSyntax.*
+import com.bilalfazlani.jslt.parsing.JsltSyntax.*
 
 val input =
   """{"name": ["bilal", { "dd": 3.3 }],

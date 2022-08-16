@@ -1,4 +1,4 @@
-package com.bilalfazlani
+package com.bilalfazlani.jslt.parsing
 
 import zio.Chunk
 import zio.parser.*

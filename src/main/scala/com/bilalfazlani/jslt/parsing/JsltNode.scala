@@ -1,4 +1,4 @@
-package com.bilalfazlani
+package com.bilalfazlani.jslt.parsing
 
 opaque type JsltNode = String
 

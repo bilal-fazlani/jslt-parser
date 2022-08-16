@@ -1,4 +1,4 @@
-package com.bilalfazlani
+package com.bilalfazlani.jslt.parsing
 
 case class JsltImport(path: String, name: String)
 
