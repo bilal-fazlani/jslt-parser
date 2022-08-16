@@ -77,16 +77,7 @@ object JsltSyntax {
       )
 
   def jIntegerSyntax: Syntax[String, Char, Char, Jslt] =
-    val anyClose: Syntax[String, Char, Char, Unit] =
-      literal("}").unit("}")
-        <> literal("]").unit("]")
-        <> literal(")").unit(")")
-        <> literal(",").unit(",")
-        <> literal(".").unit(".")
-        <> whitespace.unit(' ')
-
-    digit
-      .repeatUntil(anyClose)
+    digit.repeat
       .transform(
         x => JValue(JPrimitive.JInteger(x.mkString.toInt)),
         (jslt: Jslt) =>
