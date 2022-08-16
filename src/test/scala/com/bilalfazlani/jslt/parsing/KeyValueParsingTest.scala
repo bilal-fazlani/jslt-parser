@@ -33,7 +33,7 @@ object KeyValueParsingTest extends ZIOSpecDefault {
     },
     test("key value test for boolean value") {
       val input = """"key_name-3" : true""""
-      val result = JsltSyntax.keyValueSyntax.widenWith() .parseString(input)
+      val result = JsltSyntax.keyValueSyntax.parseString(input)
       assert(result)(
         isRight(
           equalTo(("key_name-3", JValue(value = JBoolean(value = true))))

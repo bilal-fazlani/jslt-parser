@@ -13,10 +13,6 @@ object JsltSyntax {
   val optionalWhitespace: Syntax[String, Char, Char, Unit] =
     whitespace.repeat0.unit(Chunk.empty)
 
-  val alphanumericString: Syntax[String, Char, Char, String] =
-    alphaNumeric.repeat
-      .transform(_.mkString, Chunk.fromIterable)
-
   val anyStringCustom: Syntax[String, Char, Char, String] =
     Syntax.notChar('"').repeat.transform(_.mkString, Chunk.fromIterable)
 
@@ -122,7 +118,7 @@ object JsltSyntax {
     jArraySyntax <> jObjectSyntax <> jPrimitiveSyntax
 
   val keySyntax: Syntax[Any, Char, Any, String] =
-    alphanumericString.quoted
+    anyStringCustom.quoted
       .named("json key")
 
   val keyValueSyntax: Syntax[Any, Char, Any, (String, Jslt)] = keySyntax
