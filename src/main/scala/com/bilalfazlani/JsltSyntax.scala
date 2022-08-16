@@ -6,35 +6,49 @@ import zio.parser.Syntax
 import zio.parser.Syntax.*
 
 object JsltSyntax {
-  def literal(lit: String) = string(lit, ())
+  def literal(lit: String): Syntax[String, Char, Char, String] =
+    string(lit, lit)
 
-  val optionalWhitespace = whitespace.repeat0.unit(Chunk.empty)
+  val optionalWhitespace: Syntax[String, Char, Char, Unit] =
+    whitespace.repeat0.unit(Chunk.empty)
 
-  val comma = literal(",")
-  val colon = literal(":")
+  val validString: Syntax[String, Char, Char, String] = alphaNumeric.repeat
+    .transform(_.mkString, Chunk.fromIterable)
 
-  extension [In, Value](syntax: Syntax[_, In, _, Value]) {
-    def quoted = syntax.surroundedBy(literal("\""))
+  val comma: Syntax[String, Char, Char, Unit] = literal(",").unit(", ")
 
-    def curly = literal("{")
+  val colon: Syntax[String, Char, Char, Unit] = literal(":").unit(": ")
+
+  extension [Err, In, Out, Value](syntax: Syntax[Err, In, Out, Value]) {
+    def quoted = syntax.between(
+      literal("\"").unit("\""),
+      literal("\"").unit("\"")
+    )
+
+    def curly = literal("{").unit("{")
       ~ optionalWhitespace
       ~ syntax
       ~ optionalWhitespace
-      ~ literal("}")
+      ~ literal("}").unit("}")
   }
 
-  val keySyntax = alphaNumeric.repeat
-    .transform(_.mkString, Chunk.fromIterable)
-    .quoted
-    .named("json key")
-    .repeatWithSep(
-      optionalWhitespace ~ comma ~ optionalWhitespace
-    )
+  val jsltSyntax: Syntax[String, Char, Char, Jslt] = ???
+
+  val keySyntax =
+    validString.quoted
+      .named("json key")
 
   val keyValueSyntax = keySyntax
     ~ optionalWhitespace
     ~ colon
     ~ optionalWhitespace
-    ~ alphaNumeric.repeat
-      .transform(_.mkString, Chunk.fromIterable)
+    ~ jsltSyntax
+
+  val jObjectSyntax = keyValueSyntax
+    .repeatWithSep(comma)
+    .curly
+    .transform(
+      items => Jslt.JObject(items.toMap),
+      (obj: Jslt) => Chunk.fromIterable(obj.asInstanceOf[Jslt.JObject].items)
+    )
 }

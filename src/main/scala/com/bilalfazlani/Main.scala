@@ -7,13 +7,11 @@ import Syntax.*
 import com.bilalfazlani.JsltSyntax.*
 
 val input =
-  """{"name" ,
-    |"age",
-    |
-    |"address"}
+  """{"name": "bilal" ,
+    |"age": "abc",
+    |"address": "adsad"}
     |""".stripMargin.trim
 
 @main def main(): Unit = {
-
-  println(keySyntax.parseString(input))
+  println(jObjectSyntax.parseString(input))
 }
