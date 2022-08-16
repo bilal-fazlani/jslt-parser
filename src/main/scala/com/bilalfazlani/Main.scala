@@ -1,0 +1,19 @@
+package com.bilalfazlani
+
+import zio.parser.*
+import zio.parser.Syntax.*
+import zio.Chunk
+import Syntax.*
+import com.bilalfazlani.JsltSyntax.*
+
+val input =
+  """{"name" ,
+    |"age",
+    |
+    |"address"}
+    |""".stripMargin.trim
+
+@main def main(): Unit = {
+
+  println(keySyntax.parseString(input))
+}
