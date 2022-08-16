@@ -35,31 +35,38 @@ object JsltSyntax {
       ~ syntax
       ~ optionalWhitespace
       ~ literal("}").unit("}")
+
+    def array = literal("[").unit("[")
+      ~ optionalWhitespace
+      ~ syntax
+      ~ optionalWhitespace
+      ~ literal("]").unit("]")
   }
 
-  val jStringSyntax: Syntax[Any, Char, Any, Jslt] =
+  def jStringSyntax: Syntax[Any, Char, Any, Jslt] =
     anyStringCustom.quoted
       .transform(
-        JString.apply,
-        (jslt: Jslt) => jslt.asInstanceOf[JString].value
+        x => JValue(JPrimitive.JString(x)),
+        (jslt: Jslt) => jslt.asInstanceOf[JPrimitive.JString].value
       )
 
-  val jBooleanSyntax: Syntax[String, Char, Char, Jslt] = Syntax
+  def jBooleanSyntax: Syntax[String, Char, Char, Jslt] = Syntax
     .oneOf(literal("true"), literal("false"))
-    .transform[Jslt](
-      x => JBoolean(x.toBoolean),
-      (jslt: Jslt) => jslt.asInstanceOf[JBoolean].value.toString
+    .transform(
+      x => JValue(JPrimitive.JBoolean(x.toBoolean)),
+      (jslt: Jslt) => jslt.asInstanceOf[JPrimitive.JBoolean].value.toString
     )
 
-  val jDoubleSyntax: Syntax[String, Char, Char, Jslt] =
-
+  def jDoubleSyntax: Syntax[String, Char, Char, Jslt] =
     def toDouble(d: (Chunk[Char], Option[Chunk[Char]])): Double = d match {
       case (chunk, None) => chunk.mkString.toDouble
       case (chunk, Some(chunk2)) =>
         (chunk.mkString + "." + chunk2.mkString).toDouble
     }
 
-    def toString(jNumber: JNumber): (Chunk[Char], Option[Chunk[Char]]) =
+    def toString(
+        jNumber: JPrimitive.JDouble
+    ): (Chunk[Char], Option[Chunk[Char]]) =
       jNumber.value.toString.split(".").toList match {
         case h :: Nil => (Chunk.fromIterable(h), None)
         case h :: t :: Nil =>
@@ -67,13 +74,30 @@ object JsltSyntax {
       }
 
     (digit.repeat ~ (literal(".").unit(".") ~ digit.repeat).optional)
-      .transform[Jslt](
-        x => JNumber(toDouble(x)),
-        (jslt: Jslt) => toString(jslt.asInstanceOf[JNumber])
+      .transform(
+        x => JValue(JPrimitive.JDouble(toDouble(x))),
+        (jslt: Jslt) =>
+          toString(
+            jslt.asInstanceOf[JValue].value.asInstanceOf[JPrimitive.JDouble]
+          )
+      )
+
+  def jPrimitiveSyntax: Syntax[Any, Char, Any, Jslt] =
+    jBooleanSyntax <> jDoubleSyntax <> jStringSyntax
+
+  def jArraySyntax: Syntax[Any, Char, Any, Jslt] =
+    (jPrimitiveSyntax <> jObjectSyntax)
+      .repeatWithSep(
+        optionalWhitespace ~ comma ~ optionalWhitespace
+      )
+      .array
+      .transform(
+        items => JArray(items),
+        (jslt: Jslt) => jslt.asInstanceOf[JArray].items
       )
 
   def jsltSyntax: Syntax[Any, Char, Any, Jslt] =
-    jBooleanSyntax <> jDoubleSyntax <> jStringSyntax
+    jArraySyntax <> jPrimitiveSyntax <> jObjectSyntax
 
   val keySyntax: Syntax[Any, Char, Any, String] =
     alphanumericString.quoted
@@ -85,12 +109,12 @@ object JsltSyntax {
     ~ optionalWhitespace
     ~ jsltSyntax
 
-  val jObjectSyntax: Syntax[Any, Char, Any, JObject] =
+  def jObjectSyntax: Syntax[Any, Char, Any, Jslt] =
     keyValueSyntax
       .repeatWithSep(optionalWhitespace ~ comma ~ optionalWhitespace)
       .curly
       .transform(
         items => JObject(items.toMap),
-        (obj: JObject) => Chunk.fromIterable(obj.items)
+        (obj: Jslt) => Chunk.fromIterable(obj.asInstanceOf[JObject].items)
       )
 }

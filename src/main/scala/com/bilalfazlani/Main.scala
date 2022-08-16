@@ -7,8 +7,8 @@ import Syntax.*
 import com.bilalfazlani.JsltSyntax.*
 
 val input =
-  """{"name": "bilal",
-    |"rank": 24.5,
+  """{"name": ["bilal", { "dd": 3.3 }],
+    |"rank": [24.5, 4],
     |"age": 2}
     |""".stripMargin.trim
 

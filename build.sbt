@@ -7,6 +7,7 @@ lazy val root = project
     version := "0.1.0-SNAPSHOT",
     scalaVersion := scala3Version,
     libraryDependencies ++= Seq(
-      Libs.zioParser
+      Libs.zioParser,
+      Libs.zioTest % Test
     )
   )
