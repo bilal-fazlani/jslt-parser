@@ -4,6 +4,7 @@ import zio.Chunk
 import zio.parser.*
 import zio.parser.Syntax
 import zio.parser.Syntax.*
+import Jslt.*
 
 object JsltSyntax {
   def literal(lit: String): Syntax[String, Char, Char, String] =
@@ -12,8 +13,12 @@ object JsltSyntax {
   val optionalWhitespace: Syntax[String, Char, Char, Unit] =
     whitespace.repeat0.unit(Chunk.empty)
 
-  val validString: Syntax[String, Char, Char, String] = alphaNumeric.repeat
-    .transform(_.mkString, Chunk.fromIterable)
+  val alphanumericString: Syntax[String, Char, Char, String] =
+    alphaNumeric.repeat
+      .transform(_.mkString, Chunk.fromIterable)
+
+  val anyStringCustom: Syntax[String, Char, Char, String] =
+    Syntax.notChar('"').repeat.transform(_.mkString, Chunk.fromIterable)
 
   val comma: Syntax[String, Char, Char, Unit] = literal(",").unit(", ")
 
@@ -32,23 +37,29 @@ object JsltSyntax {
       ~ literal("}").unit("}")
   }
 
-  val jsltSyntax: Syntax[String, Char, Char, Jslt] = ???
+  val jStringSyntax: Syntax[Any, Char, Any, JString] =
+    anyStringCustom.quoted
+      .transform(JString.apply, _.value)
 
-  val keySyntax =
-    validString.quoted
+  def jsltSyntax: Syntax[Any, Char, Any, Jslt] =
+    jStringSyntax.transform(identity, _.asInstanceOf[JString])
+
+  val keySyntax: Syntax[Any, Char, Any, String] =
+    alphanumericString.quoted
       .named("json key")
 
-  val keyValueSyntax = keySyntax
+  val keyValueSyntax: Syntax[Any, Char, Any, (String, Jslt)] = keySyntax
     ~ optionalWhitespace
     ~ colon
     ~ optionalWhitespace
     ~ jsltSyntax
 
-  val jObjectSyntax = keyValueSyntax
-    .repeatWithSep(comma)
-    .curly
-    .transform(
-      items => Jslt.JObject(items.toMap),
-      (obj: Jslt) => Chunk.fromIterable(obj.asInstanceOf[Jslt.JObject].items)
-    )
+  val jObjectSyntax: Syntax[Any, Char, Any, JObject] =
+    keyValueSyntax
+      .repeatWithSep(optionalWhitespace ~ comma ~ optionalWhitespace)
+      .curly
+      .transform(
+        items => JObject(items.toMap),
+        (obj: JObject) => Chunk.fromIterable(obj.items)
+      )
 }
