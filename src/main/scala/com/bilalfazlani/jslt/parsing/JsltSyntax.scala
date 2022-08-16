@@ -58,22 +58,20 @@ object JsltSyntax {
     )
 
   def jDoubleSyntax: Syntax[String, Char, Char, Jslt] =
-    def toDouble(d: (Chunk[Char], Option[Chunk[Char]])): Double = d match {
-      case (chunk, None) => chunk.mkString.toDouble
-      case (chunk, Some(chunk2)) =>
+    def toDouble(d: (Chunk[Char], Chunk[Char])): Double = d match {
+      case (chunk, chunk2) =>
         (chunk.mkString + "." + chunk2.mkString).toDouble
     }
 
     def toString(
         jNumber: JPrimitive.JDouble
-    ): (Chunk[Char], Option[Chunk[Char]]) =
+    ): (Chunk[Char], Chunk[Char]) =
       jNumber.value.toString.split(".").toList match {
-        case h :: Nil => (Chunk.fromIterable(h), None)
         case h :: t :: Nil =>
-          (Chunk.fromIterable(h), Some(Chunk.fromIterable(t)))
+          (Chunk.fromIterable(h), Chunk.fromIterable(t))
       }
 
-    (digit.repeat ~ (literal(".").unit(".") ~ digit.repeat).optional)
+    (digit.repeat ~ (literal(".").unit(".") ~ digit.repeat))
       .transform(
         x => JValue(JPrimitive.JDouble(toDouble(x))),
         (jslt: Jslt) =>
@@ -82,8 +80,32 @@ object JsltSyntax {
           )
       )
 
+  def jIntegerSyntax: Syntax[String, Char, Char, Jslt] =
+    val anyClose: Syntax[String, Char, Char, Unit] =
+      literal("}").unit("}")
+        <> literal("]").unit("]")
+        <> literal(")").unit(")")
+        <> literal(",").unit(",")
+        <> literal(".").unit(".")
+        <> whitespace.unit(' ')
+
+    digit
+      .repeatUntil(anyClose)
+      .transform(
+        x => JValue(JPrimitive.JInteger(x.mkString.toInt)),
+        (jslt: Jslt) =>
+          Chunk.fromIterable(
+            jslt
+              .asInstanceOf[JValue]
+              .value
+              .asInstanceOf[JPrimitive.JInteger]
+              .value
+              .toString
+          )
+      )
+
   def jPrimitiveSyntax: Syntax[Any, Char, Any, Jslt] =
-    jBooleanSyntax <> jDoubleSyntax <> jStringSyntax
+    jStringSyntax <> jBooleanSyntax <> jDoubleSyntax <> jIntegerSyntax
 
   def jArraySyntax: Syntax[Any, Char, Any, Jslt] =
     (jPrimitiveSyntax <> jObjectSyntax)
@@ -97,7 +119,7 @@ object JsltSyntax {
       )
 
   def jsltSyntax: Syntax[Any, Char, Any, Jslt] =
-    jArraySyntax <> jPrimitiveSyntax <> jObjectSyntax
+    jArraySyntax <> jObjectSyntax <> jPrimitiveSyntax
 
   val keySyntax: Syntax[Any, Char, Any, String] =
     alphanumericString.quoted

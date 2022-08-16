@@ -1,6 +1,7 @@
 package com.bilalfazlani.jslt.parsing
 
 import zio.Chunk
+import zio.parser.Parser
 
 sealed trait Jslt
 object Jslt {
@@ -10,6 +11,8 @@ object Jslt {
   case class JArray(items: Chunk[Jslt]) extends Jslt
   case class JObject(items: Map[String, Jslt]) extends Jslt
   case class JValue(value: JPrimitive) extends Jslt
+
+  def parse(input: String) = JsltSyntax.jsltSyntax.parseString(input)
 }
 
 enum JPrimitive:
