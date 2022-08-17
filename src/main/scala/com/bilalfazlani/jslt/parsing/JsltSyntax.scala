@@ -112,10 +112,11 @@ object JsltSyntax {
     jStringSyntax <> jBooleanSyntax <> jDoubleSyntax <> jIntegerSyntax
 
   def jArraySyntax: Syntax[Any, Char, Any, Jslt] =
-    (jPrimitiveSyntax <> jObjectSyntax <> jPathSyntax)
+    ((jPrimitiveSyntax <> jObjectSyntax <> jPathSyntax)
       .repeatWithSep(
         optionalWhitespace ~ comma ~ optionalWhitespace
       )
+      ~ comma.optional.unit(None))
       .array
       .transform(
         items => JArray(items),
@@ -163,9 +164,9 @@ object JsltSyntax {
     ~ jsltSyntax
 
   def jObjectSyntax: Syntax[Any, Char, Any, Jslt] =
-    keyValueSyntax
+    (keyValueSyntax
       .repeatWithSep(optionalWhitespace ~ comma ~ optionalWhitespace)
-      .curly
+      ~ comma.optional.unit(None)).curly
       .transform(
         items => JObject(items.toMap),
         (obj: Jslt) => Chunk.fromIterable(obj.asInstanceOf[JObject].items)

@@ -64,6 +64,45 @@ object StructureParsingTest extends ZIOSpecDefault {
       val result = Jslt.parse(input)
       assert(result)(isRight(equalTo(expected)))
     },
+    test("parse nested object of nested objects of primitives on new lines") {
+      val input =
+        """{
+                |  "name": "john",
+                |  "age": 30.2,
+                |  "rank": 2,
+                |  "is_admin": true,
+                |  "address": {
+                |    "street": "street1",
+                |    "city": "city1",
+                |    "country": {  
+                |      "name": "country1",  
+                |      "code": "code1"  
+                |    }  
+                |  }
+                |}""".stripMargin
+      val expected = JObject(
+        Map(
+          "name" -> JValue(JString("john")),
+          "age" -> JValue(JDouble(30.2)),
+          "rank" -> JValue(JInteger(2)),
+          "is_admin" -> JValue(JBoolean(true)),
+          "address" -> JObject(
+            Map(
+              "street" -> JValue(JString("street1")),
+              "city" -> JValue(JString("city1")),
+              "country" -> JObject(
+                Map(
+                  "name" -> JValue(JString("country1")),
+                  "code" -> JValue(JString("code1"))
+                )
+              )
+            )
+          )
+        )
+      )
+      val result = Jslt.parse(input)
+      assert(result)(isRight(equalTo(expected)))
+    },
     test("parse object with array of primitive") {
       val input =
         """{ "name": "john", "age": 30.2, "rank": 2, "is_admin": true, "address": { "street": "street1", "city": "city1" }, "friends": [ "friend1", "friend2" ] }"""
@@ -267,6 +306,39 @@ object StructureParsingTest extends ZIOSpecDefault {
               )
             )
           )
+        )
+      )
+      val result = Jslt.parse(input)
+      assert(result)(isRight(equalTo(expected)))
+    },
+    test("parse flat object of primitives with extra comma in the end") {
+      val input =
+        """{ "name": "john", "age": 30.2, "rank": 2, "is_admin": true, "address": { "street": "street1", "city": "city1", }}"""
+      val expected = JObject(
+        Map(
+          "name" -> JValue(JString("john")),
+          "age" -> JValue(JDouble(30.2)),
+          "rank" -> JValue(JInteger(2)),
+          "is_admin" -> JValue(JBoolean(true)),
+          "address" -> JObject(
+            Map(
+              "street" -> JValue(JString("street1")),
+              "city" -> JValue(JString("city1"))
+            )
+          )
+        )
+      )
+      val result = Jslt.parse(input)
+      assert(result)(isRight(equalTo(expected)))
+    },
+    test("parse array of primitives with extra comma in the end") {
+      val input =
+        """[ "john", "john's age", "john's rank", ]"""
+      val expected = JArray(
+        Chunk(
+          JValue(JString("john")),
+          JValue(JString("john's age")),
+          JValue(JString("john's rank"))
         )
       )
       val result = Jslt.parse(input)
