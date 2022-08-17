@@ -1,7 +1,6 @@
 val scala3Version = "3.1.3"
 
 ThisBuild / scalaVersion := scala3Version
-//ThisBuild / crossScalaVersions := List(scala3Version, "2.13.8")
 ThisBuild / organization := "com.bilal-fazlani"
 ThisBuild / organizationName := "Bilal Fazlani"
 ThisBuild / scmInfo := Some(
@@ -27,7 +26,7 @@ ThisBuild / homepage := Some(
   url("https://github.com/bilal-fazlani/jslt-parser")
 )
 
-ThisBuild / testFrameworks += new TestFramework("zio.test.sbt.ZTestFramework")
+//ThisBuild / testFrameworks += new TestFramework("zio.test.sbt.ZTestFramework")
 
 lazy val root = project
   .in(file("."))
@@ -37,7 +36,9 @@ lazy val root = project
     scalaVersion := scala3Version,
     libraryDependencies ++= Seq(
       Libs.zioParser,
-      Libs.zioTest % Test,
-      Libs.zioTestJUnit % Test
-    )
+      Libs.zioTest,
+      Libs.zioTestJUnit,
+      Libs.zioTestSbt
+    ),
+    testFrameworks += new TestFramework("zio.test.sbt.ZTestFramework")
   )
