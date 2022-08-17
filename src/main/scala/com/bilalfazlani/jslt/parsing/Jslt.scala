@@ -15,8 +15,11 @@ object Jslt {
   def parse(input: String) = JsltSyntax.jsltSyntax.parseString(input)
 }
 
-enum JPrimitive:
-  case JString(value: String)
-  case JDouble(value: Double)
-  case JInteger(value: Int)
-  case JBoolean(value: Boolean)
+sealed trait JPrimitive
+
+object JPrimitive {
+  case class JString(value: String) extends JPrimitive
+  case class JDouble(value: Double) extends JPrimitive
+  case class JInteger(value: Int) extends JPrimitive
+  case class JBoolean(value: Boolean) extends JPrimitive
+}

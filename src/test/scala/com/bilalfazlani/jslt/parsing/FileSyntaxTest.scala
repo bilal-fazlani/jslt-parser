@@ -1,12 +1,9 @@
 package com.bilalfazlani.jslt.parsing
 
-import com.bilalfazlani.jslt.parsing.JPrimitive.{JDouble, JInteger}
-import com.bilalfazlani.jslt.parsing.Jslt.*
+import com.bilalfazlani.jslt.parsing.Jslt._
 import zio.Chunk
-import zio.parser.Parser
-import zio.test.Assertion.*
-import zio.test.*
-import zio.test.TestAspect.ignore
+import zio.test.Assertion._
+import zio.test._
 
 object FileSyntaxTest extends ZIOSpecDefault {
   def spec = suite("FileSyntaxTest")(

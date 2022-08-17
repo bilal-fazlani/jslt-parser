@@ -1,10 +1,10 @@
 package com.bilalfazlani.jslt.parsing
 
-import com.bilalfazlani.jslt.parsing.JPrimitive.*
-import com.bilalfazlani.jslt.parsing.Jslt.*
+import com.bilalfazlani.jslt.parsing.JPrimitive._
+import com.bilalfazlani.jslt.parsing.Jslt._
 import zio.Chunk
-import zio.test.*
-import zio.test.Assertion.*
+import zio.test._
+import zio.test.Assertion._
 
 object StructureParsingTest extends ZIOSpecDefault {
   def spec = suite("ObjectParsingTest")(

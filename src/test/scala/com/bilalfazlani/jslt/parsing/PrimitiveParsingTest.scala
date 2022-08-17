@@ -1,9 +1,9 @@
 package com.bilalfazlani.jslt.parsing
 
-import com.bilalfazlani.jslt.parsing.JPrimitive.*
-import com.bilalfazlani.jslt.parsing.Jslt.*
-import zio.test.*
-import zio.test.Assertion.*
+import com.bilalfazlani.jslt.parsing.JPrimitive._
+import com.bilalfazlani.jslt.parsing.Jslt._
+import zio.test._
+import zio.test.Assertion._
 
 object PrimitiveParsingTest extends ZIOSpecDefault {
   def spec = suite("PrimitiveParsingTest")(

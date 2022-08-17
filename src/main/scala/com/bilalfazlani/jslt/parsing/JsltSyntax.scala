@@ -1,10 +1,10 @@
 package com.bilalfazlani.jslt.parsing
 
 import zio.Chunk
-import zio.parser.*
+import zio.parser._
 import zio.parser.Syntax
-import zio.parser.Syntax.*
-import Jslt.*
+import zio.parser.Syntax._
+import Jslt._
 
 object JsltSyntax {
   def literal(lit: String): Syntax[String, Char, Char, String] =
@@ -18,29 +18,34 @@ object JsltSyntax {
   val newLine = char('\n')
 
   val anyStringCustom: Syntax[String, Char, Char, String] =
-    Syntax.notChar('"').repeat.transform(_.mkString, Chunk.fromIterable)
+    Syntax
+      .notChar('"')
+      .repeat
+      .transform(_.mkString, str => Chunk.fromIterable(str))
 
   val comma: Syntax[String, Char, Char, Unit] = literal(",").unit(", ")
 
   val colon: Syntax[String, Char, Char, Unit] = literal(":").unit(": ")
 
-  extension [Err, In, Out, Value](syntax: Syntax[Err, In, Out, Value]) {
+  implicit class SyntaxExtensions[Err, In, Out, Value](
+      syntax: Syntax[Err, In, Out, Value]
+  ) {
     def quoted = syntax.between(
       literal("\"").unit("\""),
       literal("\"").unit("\"")
     )
 
-    def curly = literal("{").unit("{")
+    def curly = (literal("{").unit("{")
       ~ optionalWhitespace
       ~ syntax
       ~ optionalWhitespace
-      ~ literal("}").unit("}")
+      ~ literal("}").unit("}"))
 
-    def array = literal("[").unit("[")
+    def array = (literal("[").unit("[")
       ~ optionalWhitespace
       ~ syntax
       ~ optionalWhitespace
-      ~ literal("]").unit("]")
+      ~ literal("]").unit("]"))
   }
 
   def jStringSyntax: Syntax[Any, Char, Any, Jslt] =
@@ -70,7 +75,7 @@ object JsltSyntax {
       (jslt: Jslt) => jslt.asInstanceOf[JPrimitive.JBoolean].value.toString
     )
 
-  def jDoubleSyntax: Syntax[String, Char, Char, Jslt] =
+  def jDoubleSyntax: Syntax[String, Char, Char, Jslt] = {
     def toDouble(d: (Chunk[Char], Chunk[Char])): Double = d match {
       case (chunk, chunk2) =>
         (chunk.mkString + "." + chunk2.mkString).toDouble
@@ -92,6 +97,7 @@ object JsltSyntax {
             jslt.asInstanceOf[JValue].value.asInstanceOf[JPrimitive.JDouble]
           )
       )
+  }
 
   def jIntegerSyntax: Syntax[String, Char, Char, Jslt] =
     digit.repeat
@@ -116,8 +122,7 @@ object JsltSyntax {
       .repeatWithSep(
         optionalWhitespace ~ comma ~ optionalWhitespace
       )
-      ~ comma.optional.unit(None))
-      .array
+      ~ comma.optional.unit(None)).array
       .transform(
         items => JArray(items),
         (jslt: Jslt) => jslt.asInstanceOf[JArray].items
@@ -157,11 +162,11 @@ object JsltSyntax {
     anyStringCustom.quoted
       .named("json key")
 
-  val keyValueSyntax: Syntax[Any, Char, Any, (String, Jslt)] = keySyntax
+  val keyValueSyntax: Syntax[Any, Char, Any, (String, Jslt)] = (keySyntax
     ~ optionalWhitespace
     ~ colon
     ~ optionalWhitespace
-    ~ jsltSyntax
+    ~ jsltSyntax)
 
   def jObjectSyntax: Syntax[Any, Char, Any, Jslt] =
     (keyValueSyntax
