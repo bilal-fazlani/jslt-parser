@@ -6,6 +6,7 @@ import zio.Chunk
 import zio.parser.Parser
 import zio.test.Assertion.*
 import zio.test.*
+import zio.test.TestAspect.ignore
 
 object FileSyntaxTest extends ZIOSpecDefault {
   def spec = suite("FileSyntaxTest")(
@@ -40,7 +41,7 @@ object FileSyntaxTest extends ZIOSpecDefault {
         )
       )
       assert(JsltFile.parseFromString(input))(isRight(equalTo(expected)))
-    },
+    } @@ ignore,
     test("file syntax test with 1 import") {
       val input = """import "transformers/abcs.jslt" as MyCustomProps
             |{
