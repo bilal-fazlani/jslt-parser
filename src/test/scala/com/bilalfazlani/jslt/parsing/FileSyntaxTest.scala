@@ -22,12 +22,12 @@ object FileSyntaxTest extends ZIOSpecDefault {
     },
     test("file syntax test without import") {
       val input = """{
-          |"name": "john",
+          |  "name": "john",
           |  "age": 30.2,
           |  "rank": 2,
           |  "is_admin": true,
           |  "path": .home.john
-          |}"""
+          |}""".stripMargin
       val expected = JsltFile(
         Chunk.empty,
         JObject(
@@ -41,7 +41,7 @@ object FileSyntaxTest extends ZIOSpecDefault {
         )
       )
       assert(JsltFile.parseFromString(input))(isRight(equalTo(expected)))
-    } @@ ignore,
+    },
     test("file syntax test with 1 import") {
       val input = """import "transformers/abcs.jslt" as MyCustomProps
             |{

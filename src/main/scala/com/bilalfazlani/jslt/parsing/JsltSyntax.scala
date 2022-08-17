@@ -141,19 +141,13 @@ object JsltSyntax {
   )
 
   val fileSyntax =
-    (
-      (importSyntax.repeat ~ optionalWhitespace ~ jObjectSyntax)
-        .transform(
-          { case (imports, obj) =>
-            JsltFile(imports, obj.asInstanceOf[JObject])
-          },
-          (jslt: JsltFile) => (jslt.jsltImports, jslt.content)
-        )
-    )
-//      <> jObjectSyntax.transform(
-//      { obj => JsltFile(Chunk.empty, obj.asInstanceOf[JObject]) },
-//      (jslt: JsltFile) => jslt.content
-//    )
+    (importSyntax.repeat0 ~ optionalWhitespace ~ jObjectSyntax)
+      .transform(
+        { case (imports, obj) =>
+          JsltFile(imports, obj.asInstanceOf[JObject])
+        },
+        (jslt: JsltFile) => (jslt.jsltImports, jslt.content)
+      )
 
   def jsltSyntax: Syntax[Any, Char, Any, Jslt] =
     jArraySyntax <> jObjectSyntax <> jPrimitiveSyntax <> jPathSyntax
