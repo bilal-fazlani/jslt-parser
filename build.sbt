@@ -26,19 +26,17 @@ ThisBuild / homepage := Some(
   url("https://github.com/bilal-fazlani/jslt-parser")
 )
 
-//ThisBuild / testFrameworks += new TestFramework("zio.test.sbt.ZTestFramework")
+ThisBuild / testFrameworks += new TestFramework("zio.test.sbt.ZTestFramework")
 
 lazy val root = project
   .in(file("."))
   .settings(
     name := "jslt-parser",
     moduleName := "jslt-parser",
-    scalaVersion := scala3Version,
     libraryDependencies ++= Seq(
       Libs.zioParser,
       Libs.zioTest,
-      Libs.zioTestJUnit,
+//      Libs.zioTestJUnit,
       Libs.zioTestSbt
-    ),
-    testFrameworks += new TestFramework("zio.test.sbt.ZTestFramework")
+    )
   )

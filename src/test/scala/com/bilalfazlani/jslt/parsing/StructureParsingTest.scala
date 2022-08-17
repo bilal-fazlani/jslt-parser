@@ -5,9 +5,8 @@ import com.bilalfazlani.jslt.parsing.Jslt.*
 import zio.Chunk
 import zio.test.*
 import zio.test.Assertion.*
-import zio.test.junit.JUnitRunnableSpec
 
-class StructureParsingTest extends JUnitRunnableSpec {
+object StructureParsingTest extends ZIOSpecDefault {
   def spec = suite("ObjectParsingTest")(
     test("parse flat object of primitive") {
       val input =

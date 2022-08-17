@@ -4,11 +4,10 @@ import com.bilalfazlani.jslt.parsing.JPrimitive.{JDouble, JInteger}
 import com.bilalfazlani.jslt.parsing.Jslt.*
 import zio.Chunk
 import zio.parser.Parser
-import zio.test.junit.JUnitRunnableSpec
 import zio.test.Assertion.*
 import zio.test.*
 
-class FileSyntaxTest extends JUnitRunnableSpec {
+object FileSyntaxTest extends ZIOSpecDefault {
   def spec = suite("FileSyntaxTest")(
     test("parse single import statement") {
       val input: String = "import \"transformers/abcs.jslt\" as MyCustomProps"

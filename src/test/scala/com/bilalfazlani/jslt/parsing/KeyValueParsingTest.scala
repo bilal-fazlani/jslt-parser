@@ -5,9 +5,8 @@ import com.bilalfazlani.jslt.parsing.Jslt.*
 import zio.Chunk
 import zio.test.*
 import zio.test.Assertion.*
-import zio.test.junit.JUnitRunnableSpec
 
-class KeyValueParsingTest extends JUnitRunnableSpec {
+object KeyValueParsingTest extends ZIOSpecDefault {
   def spec = suite("ObjectParsingTest")(
     test("key test") {
       val input = """"key_name""""

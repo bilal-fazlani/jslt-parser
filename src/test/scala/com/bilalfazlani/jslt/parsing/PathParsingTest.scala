@@ -2,12 +2,11 @@ package com.bilalfazlani.jslt.parsing
 
 import com.bilalfazlani.jslt.parsing.JPrimitive.*
 import com.bilalfazlani.jslt.parsing.Jslt.*
-import zio.test.*
 import zio.Chunk
+import zio.test.*
 import zio.test.Assertion.*
-import zio.test.junit.JUnitRunnableSpec
 
-class PathParsingTest extends JUnitRunnableSpec {
+object PathParsingTest extends ZIOSpecDefault {
   def spec = suite("PathParsingTest")(
     test("parse path of length 1") {
       val actual = Jslt.parse(".foo")

@@ -7,6 +7,7 @@ object Libs {
   lazy val zioParser = zioOrg %% "zio-parser" % "0.1.7"
 
   lazy val zioTest = zioOrg %% "zio-test" % zioVersion % Test
-  lazy val zioTestJUnit = zioOrg %% "zio-test-junit" % zioVersion % Test
+//  lazy val zioTestJUnit = zioOrg %% "zio-test-junit" % zioVersion % Test
   lazy val zioTestSbt = zioOrg %% "zio-test-sbt" % zioVersion % Test
+//  lazy val jUnit = "com.novocode" % "junit-interface" % "0.11" % Test
 }
