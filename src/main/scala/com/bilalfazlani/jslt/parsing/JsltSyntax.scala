@@ -27,15 +27,15 @@ object JsltSyntax {
 
   val colon: Syntax[String, Char, Char, Unit] = literal(":").unit(": ")
 
-  implicit class SyntaxExtensions[Err, In, Out, Value](
-      syntax: Syntax[Err, In, Out, Value]
+  implicit class SyntaxExtensions[Err, Value](
+      syntax: Syntax[Err, Char, Char, Value]
   ) {
     def quoted = syntax.between(
       literal("\"").unit("\""),
       literal("\"").unit("\"")
     )
 
-    def separatedBy(separator: Syntax[Err, In, Out, Unit]) =
+    def separatedBy(separator: Syntax[Err, Char, Char, Unit]) =
       syntax.repeatWithSep(
         optionalWhitespace ~ separator ~ optionalWhitespace
       )
@@ -55,11 +55,12 @@ object JsltSyntax {
       ~ literal("]").unit("]"))
   }
 
-  def jStringSyntax: Syntax[Any, Char, Any, Jslt] =
+  def jStringSyntax: Syntax[Any, Char, Char, Jslt] =
     anyStringCustom.quoted
       .transform(
         x => JValue(JPrimitive.JString(x)),
-        (jslt: Jslt) => jslt.asInstanceOf[JPrimitive.JString].value
+        (jslt: Jslt) =>
+          jslt.asInstanceOf[JValue].value.asInstanceOf[JPrimitive.JString].value
       )
 
   def jPathSyntax: Syntax[String, Char, Char, Jslt] =
@@ -79,7 +80,13 @@ object JsltSyntax {
     .oneOf(literal("true"), literal("false"))
     .transform(
       x => JValue(JPrimitive.JBoolean(x.toBoolean)),
-      (jslt: Jslt) => jslt.asInstanceOf[JPrimitive.JBoolean].value.toString
+      (jslt: Jslt) =>
+        jslt
+          .asInstanceOf[JValue]
+          .value
+          .asInstanceOf[JPrimitive.JBoolean]
+          .value
+          .toString
     )
 
   def jDoubleSyntax: Syntax[String, Char, Char, Jslt] = {
@@ -90,18 +97,22 @@ object JsltSyntax {
 
     def toString(
         jNumber: JPrimitive.JDouble
-    ): (Chunk[Char], Chunk[Char]) =
-      jNumber.value.toString.split(".").toList match {
+    ): (Chunk[Char], Chunk[Char]) = {
+      jNumber.value.toString.split("\\.").toList match {
         case h :: t :: Nil =>
           (Chunk.fromIterable(h), Chunk.fromIterable(t))
       }
+    }
 
     (digit.repeat ~ (literal(".").unit(".") ~ digit.repeat))
       .transform(
         x => JValue(JPrimitive.JDouble(toDouble(x))),
         (jslt: Jslt) =>
           toString(
-            jslt.asInstanceOf[JValue].value.asInstanceOf[JPrimitive.JDouble]
+            jslt
+              .asInstanceOf[JValue]
+              .value
+              .asInstanceOf[JPrimitive.JDouble]
           )
       )
   }
@@ -121,10 +132,10 @@ object JsltSyntax {
           )
       )
 
-  def jPrimitiveSyntax: Syntax[Any, Char, Any, Jslt] =
+  def jPrimitiveSyntax: Syntax[Any, Char, Char, Jslt] =
     jStringSyntax <> jBooleanSyntax <> jDoubleSyntax <> jIntegerSyntax
 
-  def jArraySyntax: Syntax[Any, Char, Any, Jslt] =
+  def jArraySyntax: Syntax[Any, Char, Char, Jslt] =
     (jPrimitiveSyntax <> jObjectSyntax <> jPathSyntax)
       .separatedBy(comma)
       .withTrailingComma
@@ -134,7 +145,7 @@ object JsltSyntax {
         (jslt: Jslt) => jslt.asInstanceOf[JArray].items
       )
 
-  def jObjectSyntax: Syntax[Any, Char, Any, Jslt] =
+  def jObjectSyntax: Syntax[Any, Char, Char, Jslt] =
     keyValueSyntax
       .separatedBy(comma)
       .withTrailingComma
@@ -171,14 +182,14 @@ object JsltSyntax {
         (jslt: JsltFile) => (jslt.jsltImports, jslt.content)
       )
 
-  def jsltSyntax: Syntax[Any, Char, Any, Jslt] =
+  def jsltSyntax: Syntax[Any, Char, Char, Jslt] =
     jArraySyntax <> jObjectSyntax <> jPrimitiveSyntax <> jPathSyntax
 
-  val keySyntax: Syntax[Any, Char, Any, String] =
+  val keySyntax: Syntax[Any, Char, Char, String] =
     anyStringCustom.quoted
       .named("json key")
 
-  val keyValueSyntax: Syntax[Any, Char, Any, (String, Jslt)] = (keySyntax
+  val keyValueSyntax: Syntax[Any, Char, Char, (String, Jslt)] = (keySyntax
     ~ optionalWhitespace
     ~ colon
     ~ optionalWhitespace
