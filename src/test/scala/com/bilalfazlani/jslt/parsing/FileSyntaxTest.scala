@@ -8,8 +8,8 @@ import zio.test.junit.JUnitRunnableSpec
 import zio.test.Assertion.*
 import zio.test.*
 
-class ImportSyntaxTest extends JUnitRunnableSpec {
-  def spec = suite("ImportSyntaxTest")(
+class FileSyntaxTest extends JUnitRunnableSpec {
+  def spec = suite("FileSyntaxTest")(
     test("parse single import statement") {
       val input: String = "import \"transformers/abcs.jslt\" as MyCustomProps"
       val expected: JsltImport = JsltImport(

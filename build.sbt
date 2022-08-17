@@ -27,6 +27,8 @@ ThisBuild / homepage := Some(
   url("https://github.com/bilal-fazlani/jslt-parser")
 )
 
+ThisBuild / testFrameworks += new TestFramework("zio.test.sbt.ZTestFramework")
+
 lazy val root = project
   .in(file("."))
   .settings(
