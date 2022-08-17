@@ -1,0 +1,30 @@
+name: Release
+on:
+  push:
+    branches: [main, master]
+    paths-ignore:
+      - README.md
+    tags: ["*"]
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      - uses: actions/cache@v2
+        with:
+          key: ${{ runner.os }}-scala
+          path: |
+            ~/.ivy2/cache
+            ~/.sbt
+      - uses: olafurpg/setup-scala@v13
+        with:
+          java-version: adopt@1.11
+      - name: Publish ${{ github.ref }}
+        run: sbt ci-release
+        env:
+          PGP_PASSPHRASE: ${{ secrets.PGP_PASSPHRASE }}
+          PGP_SECRET: ${{ secrets.PGP_SECRET }}
+          SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
+          SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
