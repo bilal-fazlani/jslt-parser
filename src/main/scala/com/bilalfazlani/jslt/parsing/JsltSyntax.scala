@@ -35,6 +35,13 @@ object JsltSyntax {
       literal("\"").unit("\"")
     )
 
+    def separatedBy(separator: Syntax[Err, In, Out, Unit]) =
+      syntax.repeatWithSep(
+        optionalWhitespace ~ separator ~ optionalWhitespace
+      )
+
+    def withTrailingComma = syntax ~ comma.optional.unit(None)
+
     def curly = (literal("{").unit("{")
       ~ optionalWhitespace
       ~ syntax
@@ -118,14 +125,23 @@ object JsltSyntax {
     jStringSyntax <> jBooleanSyntax <> jDoubleSyntax <> jIntegerSyntax
 
   def jArraySyntax: Syntax[Any, Char, Any, Jslt] =
-    ((jPrimitiveSyntax <> jObjectSyntax <> jPathSyntax)
-      .repeatWithSep(
-        optionalWhitespace ~ comma ~ optionalWhitespace
-      )
-      ~ comma.optional.unit(None)).array
+    (jPrimitiveSyntax <> jObjectSyntax <> jPathSyntax)
+      .separatedBy(comma)
+      .withTrailingComma
+      .array
       .transform(
         items => JArray(items),
         (jslt: Jslt) => jslt.asInstanceOf[JArray].items
+      )
+
+  def jObjectSyntax: Syntax[Any, Char, Any, Jslt] =
+    keyValueSyntax
+      .separatedBy(comma)
+      .withTrailingComma
+      .curly
+      .transform(
+        items => JObject(items.toMap),
+        (obj: Jslt) => Chunk.fromIterable(obj.asInstanceOf[JObject].items)
       )
 
   val importSyntax = (literal("import").unit("import")
@@ -167,14 +183,4 @@ object JsltSyntax {
     ~ colon
     ~ optionalWhitespace
     ~ jsltSyntax)
-
-  def jObjectSyntax: Syntax[Any, Char, Any, Jslt] =
-    (keyValueSyntax
-      .repeatWithSep(optionalWhitespace ~ comma ~ optionalWhitespace)
-      ~ comma.optional.unit(None)).curly
-      .transform(
-        items => JObject(items.toMap),
-        (obj: Jslt) => Chunk.fromIterable(obj.asInstanceOf[JObject].items)
-      )
-
 }

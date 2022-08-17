@@ -16,6 +16,16 @@ object PathParsingTest extends ZIOSpecDefault {
       assert(actual)(
         isRight(equalTo(JPath(Chunk(JsltNode("foo"), JsltNode("bar")))))
       )
+    },
+    test("parse path of length 3") {
+      val actual = Jslt.parse(".foo.bar.baz")
+      assert(actual)(
+        isRight(
+          equalTo(
+            JPath(Chunk(JsltNode("foo"), JsltNode("bar"), JsltNode("baz")))
+          )
+        )
+      )
     }
   )
 }
