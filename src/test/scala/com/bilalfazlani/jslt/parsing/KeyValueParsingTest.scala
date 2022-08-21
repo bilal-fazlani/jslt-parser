@@ -1,10 +1,8 @@
 package com.bilalfazlani.jslt.parsing
 
-import com.bilalfazlani.jslt.parsing.JPrimitive._
-import com.bilalfazlani.jslt.parsing.Jslt._
-import zio.Chunk
-import zio.test._
+import com.bilalfazlani.jslt.parsing.Jslt.JPrimitive._
 import zio.test.Assertion._
+import zio.test._
 
 object KeyValueParsingTest extends ZIOSpecDefault {
   def spec = suite("ObjectParsingTest")(
@@ -18,7 +16,7 @@ object KeyValueParsingTest extends ZIOSpecDefault {
       val result = JsltSyntax.keyValueSyntax.parseString(input)
       assert(result)(
         isRight(
-          equalTo(("key_name-1", JValue(value = JString(value = "value"))))
+          equalTo(("key_name-1", JString(value = "value")))
         )
       )
     },
@@ -27,7 +25,7 @@ object KeyValueParsingTest extends ZIOSpecDefault {
       val result = JsltSyntax.keyValueSyntax.parseString(input)
       assert(result)(
         isRight(
-          equalTo(("key_name-2", JValue(value = JString(value = "value"))))
+          equalTo(("key_name-2", JString(value = "value")))
         )
       )
     },
@@ -36,7 +34,7 @@ object KeyValueParsingTest extends ZIOSpecDefault {
       val result = JsltSyntax.keyValueSyntax.parseString(input)
       assert(result)(
         isRight(
-          equalTo(("key_name-3", JValue(value = JBoolean(value = true))))
+          equalTo(("key_name-3", JBoolean(value = true)))
         )
       )
     }

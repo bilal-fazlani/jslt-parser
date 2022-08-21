@@ -29,10 +29,10 @@ object FileSyntaxTest extends ZIOSpecDefault {
         Chunk.empty,
         JObject(
           Map(
-            "name" -> JValue(JPrimitive.JString("john")),
-            "age" -> JValue(JPrimitive.JDouble(30.2)),
-            "rank" -> JValue(JPrimitive.JInteger(2)),
-            "is_admin" -> JValue(JPrimitive.JBoolean(true)),
+            "name" -> JPrimitive.JString("john"),
+            "age" -> JPrimitive.JDouble(30.2),
+            "rank" -> JPrimitive.JInteger(2),
+            "is_admin" -> JPrimitive.JBoolean(true),
             "path" -> JPath(Chunk(JsltNode("home"), JsltNode("john")))
           )
         )
@@ -52,10 +52,10 @@ object FileSyntaxTest extends ZIOSpecDefault {
         Chunk(JsltImport("transformers/abcs.jslt", "MyCustomProps")),
         JObject(
           Map(
-            "name" -> JValue(JPrimitive.JString("john")),
-            "age" -> JValue(JPrimitive.JDouble(30.2)),
-            "rank" -> JValue(JPrimitive.JInteger(2)),
-            "is_admin" -> JValue(JPrimitive.JBoolean(true)),
+            "name" -> JPrimitive.JString("john"),
+            "age" -> JPrimitive.JDouble(30.2),
+            "rank" -> JPrimitive.JInteger(2),
+            "is_admin" -> JPrimitive.JBoolean(true),
             "path" -> JPath(Chunk(JsltNode("home"), JsltNode("john")))
           )
         )
@@ -79,10 +79,10 @@ object FileSyntaxTest extends ZIOSpecDefault {
         ),
         JObject(
           Map(
-            "name" -> JValue(JPrimitive.JString("john")),
-            "age" -> JValue(JPrimitive.JDouble(30.2)),
-            "rank" -> JValue(JPrimitive.JInteger(2)),
-            "is_admin" -> JValue(JPrimitive.JBoolean(true)),
+            "name" -> JPrimitive.JString("john"),
+            "age" -> JPrimitive.JDouble(30.2),
+            "rank" -> JPrimitive.JInteger(2),
+            "is_admin" -> JPrimitive.JBoolean(true),
             "path" -> JPath(Chunk(JsltNode("home"), JsltNode("john")))
           )
         )
@@ -107,10 +107,10 @@ object FileSyntaxTest extends ZIOSpecDefault {
         ),
         JObject(
           Map(
-            "name" -> JValue(JPrimitive.JString("john")),
-            "age" -> JValue(JPrimitive.JDouble(30.2)),
-            "rank" -> JValue(JPrimitive.JInteger(2)),
-            "is_admin" -> JValue(JPrimitive.JBoolean(true)),
+            "name" -> JPrimitive.JString("john"),
+            "age" -> JPrimitive.JDouble(30.2),
+            "rank" -> JPrimitive.JInteger(2),
+            "is_admin" -> JPrimitive.JBoolean(true),
             "path" -> JPath(Chunk(JsltNode("home"), JsltNode("john")))
           )
         )

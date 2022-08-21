@@ -1,10 +1,10 @@
 package com.bilalfazlani.jslt.parsing
 
-import com.bilalfazlani.jslt.parsing.JPrimitive._
+import com.bilalfazlani.jslt.parsing.Jslt.JPrimitive._
 import com.bilalfazlani.jslt.parsing.Jslt._
 import zio.Chunk
-import zio.test._
 import zio.test.Assertion._
+import zio.test._
 
 object StructureParsingTest extends ZIOSpecDefault {
   def spec = suite("ObjectParsingTest")(
@@ -13,10 +13,10 @@ object StructureParsingTest extends ZIOSpecDefault {
         """{ "name": "john", "age": 30.2, "rank": 2, "is_admin": true, "path": .home.john }"""
       val expected = JObject(
         Map(
-          "name" -> JValue(JString("john")),
-          "age" -> JValue(JDouble(30.2)),
-          "rank" -> JValue(JInteger(2)),
-          "is_admin" -> JValue(JBoolean(true)),
+          "name" -> JString("john"),
+          "age" -> JDouble(30.2),
+          "rank" -> JInteger(2),
+          "is_admin" -> JBoolean(true),
           "path" -> JPath(Chunk(JsltNode("home"), JsltNode("john")))
         )
       )
@@ -34,10 +34,10 @@ object StructureParsingTest extends ZIOSpecDefault {
             |}""".stripMargin
       val expected = JObject(
         Map(
-          "name" -> JValue(JString("john")),
-          "age" -> JValue(JDouble(30.2)),
-          "rank" -> JValue(JInteger(2)),
-          "is_admin" -> JValue(JBoolean(true)),
+          "name" -> JString("john"),
+          "age" -> JDouble(30.2),
+          "rank" -> JInteger(2),
+          "is_admin" -> JBoolean(true),
           "path" -> JPath(Chunk(JsltNode("home"), JsltNode("john")))
         )
       )
@@ -49,14 +49,14 @@ object StructureParsingTest extends ZIOSpecDefault {
         """{ "name": "john", "age": 30.2, "rank": 2, "is_admin": true, "address": { "street": "street1", "city": "city1" } }"""
       val expected = JObject(
         Map(
-          "name" -> JValue(JString("john")),
-          "age" -> JValue(JDouble(30.2)),
-          "rank" -> JValue(JInteger(2)),
-          "is_admin" -> JValue(JBoolean(true)),
+          "name" -> JString("john"),
+          "age" -> JDouble(30.2),
+          "rank" -> JInteger(2),
+          "is_admin" -> JBoolean(true),
           "address" -> JObject(
             Map(
-              "street" -> JValue(JString("street1")),
-              "city" -> JValue(JString("city1"))
+              "street" -> JString("street1"),
+              "city" -> JString("city1")
             )
           )
         )
@@ -82,18 +82,18 @@ object StructureParsingTest extends ZIOSpecDefault {
                 |}""".stripMargin
       val expected = JObject(
         Map(
-          "name" -> JValue(JString("john")),
-          "age" -> JValue(JDouble(30.2)),
-          "rank" -> JValue(JInteger(2)),
-          "is_admin" -> JValue(JBoolean(true)),
+          "name" -> JString("john"),
+          "age" -> JDouble(30.2),
+          "rank" -> JInteger(2),
+          "is_admin" -> JBoolean(true),
           "address" -> JObject(
             Map(
-              "street" -> JValue(JString("street1")),
-              "city" -> JValue(JString("city1")),
+              "street" -> JString("street1"),
+              "city" -> JString("city1"),
               "country" -> JObject(
                 Map(
-                  "name" -> JValue(JString("country1")),
-                  "code" -> JValue(JString("code1"))
+                  "name" -> JString("country1"),
+                  "code" -> JString("code1")
                 )
               )
             )
@@ -108,20 +108,20 @@ object StructureParsingTest extends ZIOSpecDefault {
         """{ "name": "john", "age": 30.2, "rank": 2, "is_admin": true, "address": { "street": "street1", "city": "city1" }, "friends": [ "friend1", "friend2" ] }"""
       val expected = JObject(
         Map(
-          "name" -> JValue(JString("john")),
-          "age" -> JValue(JDouble(30.2)),
-          "rank" -> JValue(JInteger(2)),
-          "is_admin" -> JValue(JBoolean(true)),
+          "name" -> JString("john"),
+          "age" -> JDouble(30.2),
+          "rank" -> JInteger(2),
+          "is_admin" -> JBoolean(true),
           "address" -> JObject(
             Map(
-              "street" -> JValue(JString("street1")),
-              "city" -> JValue(JString("city1"))
+              "street" -> JString("street1"),
+              "city" -> JString("city1")
             )
           ),
           "friends" -> JArray(
             Chunk(
-              JValue(JString("friend1")),
-              JValue(JString("friend2"))
+              JString("friend1"),
+              JString("friend2")
             )
           )
         )
@@ -134,29 +134,29 @@ object StructureParsingTest extends ZIOSpecDefault {
         """{ "name": "john", "age": 30.2, "rank": 2, "is_admin": true, "address": { "street": "street1", "city": "city1" }, "friends": [ { "name": "friend1", "age": 30.2, "path": .home.friend1 }, { "name": "friend2", "age": 30.2, "path": .home.friend2 } ] }"""
       val expected = JObject(
         Map(
-          "name" -> JValue(JString("john")),
-          "age" -> JValue(JDouble(30.2)),
-          "rank" -> JValue(JInteger(2)),
-          "is_admin" -> JValue(JBoolean(true)),
+          "name" -> JString("john"),
+          "age" -> JDouble(30.2),
+          "rank" -> JInteger(2),
+          "is_admin" -> JBoolean(true),
           "address" -> JObject(
             Map(
-              "street" -> JValue(JString("street1")),
-              "city" -> JValue(JString("city1"))
+              "street" -> JString("street1"),
+              "city" -> JString("city1")
             )
           ),
           "friends" -> JArray(
             Chunk(
               JObject(
                 Map(
-                  "name" -> JValue(JString("friend1")),
-                  "age" -> JValue(JDouble(30.2)),
+                  "name" -> JString("friend1"),
+                  "age" -> JDouble(30.2),
                   "path" -> JPath(Chunk(JsltNode("home"), JsltNode("friend1")))
                 )
               ),
               JObject(
                 Map(
-                  "name" -> JValue(JString("friend2")),
-                  "age" -> JValue(JDouble(30.2)),
+                  "name" -> JString("friend2"),
+                  "age" -> JDouble(30.2),
                   "path" -> JPath(Chunk(JsltNode("home"), JsltNode("friend2")))
                 )
               )
@@ -172,38 +172,38 @@ object StructureParsingTest extends ZIOSpecDefault {
         """{ "name": "john", "age": 30.2, "rank": 2, "is_admin": true, "address": { "street": "street1", "city": "city1" }, "friends": [ { "name": "friend1", "age": 30.2, "friends": [ "friend1", "friend2" ] }, { "name": "friend2", "age": 30.2, "friends": [ "friend1", "friend2" ] } ] }"""
       val expected = JObject(
         Map(
-          "name" -> JValue(JString("john")),
-          "age" -> JValue(JDouble(30.2)),
-          "rank" -> JValue(JInteger(2)),
-          "is_admin" -> JValue(JBoolean(true)),
+          "name" -> JString("john"),
+          "age" -> JDouble(30.2),
+          "rank" -> JInteger(2),
+          "is_admin" -> JBoolean(true),
           "address" -> JObject(
             Map(
-              "street" -> JValue(JString("street1")),
-              "city" -> JValue(JString("city1"))
+              "street" -> JString("street1"),
+              "city" -> JString("city1")
             )
           ),
           "friends" -> JArray(
             Chunk(
               JObject(
                 Map(
-                  "name" -> JValue(JString("friend1")),
-                  "age" -> JValue(JDouble(30.2)),
+                  "name" -> JString("friend1"),
+                  "age" -> JDouble(30.2),
                   "friends" -> JArray(
                     Chunk(
-                      JValue(JString("friend1")),
-                      JValue(JString("friend2"))
+                      JString("friend1"),
+                      JString("friend2")
                     )
                   )
                 )
               ),
               JObject(
                 Map(
-                  "name" -> JValue(JString("friend2")),
-                  "age" -> JValue(JDouble(30.2)),
+                  "name" -> JString("friend2"),
+                  "age" -> JDouble(30.2),
                   "friends" -> JArray(
                     Chunk(
-                      JValue(JString("friend1")),
-                      JValue(JString("friend2"))
+                      JString("friend1"),
+                      JString("friend2")
                     )
                   )
                 )
@@ -243,9 +243,9 @@ object StructureParsingTest extends ZIOSpecDefault {
             |""".stripMargin
       val expected = JArray(
         Chunk(
-          JValue(JString("john")),
-          JValue(JString("john's age")),
-          JValue(JString("john's rank"))
+          JString("john"),
+          JString("john's age"),
+          JString("john's rank")
         )
       )
       val result = Jslt.parse(input)
@@ -261,9 +261,9 @@ object StructureParsingTest extends ZIOSpecDefault {
             |""".stripMargin
       val expected = JArray(
         Chunk(
-          JValue(JInteger(1)),
-          JValue(JInteger(2)),
-          JValue(JInteger(3))
+          JInteger(1),
+          JInteger(2),
+          JInteger(3)
         )
       )
       val result = Jslt.parse(input)
@@ -280,28 +280,28 @@ object StructureParsingTest extends ZIOSpecDefault {
         Chunk(
           JObject(
             Map(
-              "name" -> JValue(JString("john")),
-              "age" -> JValue(JDouble(30.2)),
-              "rank" -> JValue(JInteger(2)),
-              "is_admin" -> JValue(JBoolean(true)),
+              "name" -> JString("john"),
+              "age" -> JDouble(30.2),
+              "rank" -> JInteger(2),
+              "is_admin" -> JBoolean(true),
               "address" -> JObject(
                 Map(
-                  "street" -> JValue(JString("street1")),
-                  "city" -> JValue(JString("city1"))
+                  "street" -> JString("street1"),
+                  "city" -> JString("city1")
                 )
               )
             )
           ),
           JObject(
             Map(
-              "name" -> JValue(JString("john")),
-              "age" -> JValue(JDouble(30.2)),
-              "rank" -> JValue(JInteger(2)),
-              "is_admin" -> JValue(JBoolean(true)),
+              "name" -> JString("john"),
+              "age" -> JDouble(30.2),
+              "rank" -> JInteger(2),
+              "is_admin" -> JBoolean(true),
               "address" -> JObject(
                 Map(
-                  "street" -> JValue(JString("street1")),
-                  "city" -> JValue(JString("city1"))
+                  "street" -> JString("street1"),
+                  "city" -> JString("city1")
                 )
               )
             )
@@ -316,14 +316,14 @@ object StructureParsingTest extends ZIOSpecDefault {
         """{ "name": "john", "age": 30.2, "rank": 2, "is_admin": true, "address": { "street": "street1", "city": "city1", }}"""
       val expected = JObject(
         Map(
-          "name" -> JValue(JString("john")),
-          "age" -> JValue(JDouble(30.2)),
-          "rank" -> JValue(JInteger(2)),
-          "is_admin" -> JValue(JBoolean(true)),
+          "name" -> JString("john"),
+          "age" -> JDouble(30.2),
+          "rank" -> JInteger(2),
+          "is_admin" -> JBoolean(true),
           "address" -> JObject(
             Map(
-              "street" -> JValue(JString("street1")),
-              "city" -> JValue(JString("city1"))
+              "street" -> JString("street1"),
+              "city" -> JString("city1")
             )
           )
         )
@@ -336,9 +336,9 @@ object StructureParsingTest extends ZIOSpecDefault {
         """[ "john", "john's age", "john's rank", ]"""
       val expected = JArray(
         Chunk(
-          JValue(JString("john")),
-          JValue(JString("john's age")),
-          JValue(JString("john's rank"))
+          JString("john"),
+          JString("john's age"),
+          JString("john's rank")
         )
       )
       val result = Jslt.parse(input)

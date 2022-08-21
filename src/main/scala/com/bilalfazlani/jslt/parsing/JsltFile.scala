@@ -1,7 +1,6 @@
 package com.bilalfazlani.jslt.parsing
 
 import zio.Chunk
-import zio.parser.Parser
 
 case class JsltImport(path: String, name: String)
 
