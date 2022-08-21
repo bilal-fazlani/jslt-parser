@@ -13,7 +13,7 @@ object FileSyntaxTest extends ZIOSpecDefault {
         "transformers/abcs.jslt",
         "MyCustomProps"
       )
-      val result = JsltSyntax.importSyntax.parseString(input)
+      val result = JsltFileSyntax.importSyntax.parseString(input)
 
       assert(result)(isRight(equalTo(expected)))
     },

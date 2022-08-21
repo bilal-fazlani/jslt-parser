@@ -1,13 +1,12 @@
 package com.bilalfazlani.jslt.parsing
 
 import com.bilalfazlani.jslt.parsing.Jslt._
-import com.bilalfazlani.jslt.parsing.JsltSyntax._
 import zio.Chunk
 import zio.test.Assertion._
 import zio.test.TestAspect.ignore
 import zio.test._
 
-object StringRenderingTest extends ZIOSpecDefault {
+object StringRenderingTest extends ZIOSpecDefault with PrimitiveSyntax with JsltSyntax {
   def spec =
     suite("StringRenderingTest - Primitives")(
       test("render integer") {
