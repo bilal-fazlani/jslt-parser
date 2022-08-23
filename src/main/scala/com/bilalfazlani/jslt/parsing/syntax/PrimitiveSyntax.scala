@@ -36,6 +36,7 @@ trait PrimitiveSyntax extends JsltParsingConstructs {
       jNumber.value.toString.split("\\.").toList match {
         case h :: t :: Nil =>
           (Chunk.fromIterable(h), Chunk.fromIterable(t))
+        case _ => ??? //unreachable code
       }
     }
 

@@ -12,7 +12,8 @@ trait JsltParsingConstructs {
   lazy val optionalWhitespace: Syntax[String, Char, Char, Unit] =
     whitespace.repeat0.unit(Chunk.empty)
 
-  lazy val acceptableChars: Syntax[String, Char, Char, Char] = charIn("_-")
+  lazy val requiredWhitespace: Syntax[String, Char, Char, Unit] =
+    whitespace.repeat.unit(Chunk.empty)
 
   lazy val newLine = char('\n')
 
