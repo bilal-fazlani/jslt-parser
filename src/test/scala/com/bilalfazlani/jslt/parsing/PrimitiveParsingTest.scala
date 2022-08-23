@@ -34,6 +34,18 @@ object PrimitiveParsingTest extends ZIOSpecDefault {
     test("parse string with special characters") {
       val actual = Jslt.parse("\"hello - _ @ world\"")
       assert(actual)(isRight(equalTo(JString("hello - _ @ world"))))
+    },
+    test("parse empty string"){
+      val actual = Jslt.parse("\"\"")
+      assert(actual)(isRight(equalTo(JString(""))))
+    },
+    test("parse whitespace") {
+      val actual = Jslt.parse("\" \"")
+      assert(actual)(isRight(equalTo(JString(" "))))
+    },
+    test("parse more whitespace") {
+      val actual = Jslt.parse("\"  \"")
+      assert(actual)(isRight(equalTo(JString("  "))))
     }
   )
 }

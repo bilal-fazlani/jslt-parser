@@ -20,8 +20,7 @@ trait JsltParsingConstructs {
   lazy val closeParen = optionalWhitespace ~ literal(")").unit(")")
 
   lazy val anyStringCustom: Syntax[String, Char, Char, String] =
-    Syntax
-      .notChar('"')
+    Syntax.notChar('"')
       .repeat
       .transform(_.mkString, str => Chunk.fromIterable(str))
 
@@ -37,14 +36,14 @@ trait JsltParsingConstructs {
       literal("\"").unit("\"")
     )
 
-    def separatedBy(separator: => Syntax[String, Char, Char, Unit]) =
+    def separatedBy(separator: => Syntax[String, Char, Char, Unit]): Syntax[String, Char, Char, Chunk[Value]] =
       syntax.repeatWithSep(
         optionalWhitespace ~ separator ~ optionalWhitespace
       )
 
-    lazy val withTrailingComma = syntax ~ comma.optional.unit(None)
+    lazy val withTrailingComma: Syntax[String, Char, Char, Value] = syntax ~ comma.optional.unit(None)
 
-    lazy val curly = (literal("{").unit("{")
+    lazy val curly: Syntax[String, Char, Char, Value] = (literal("{").unit("{")
       ~ optionalWhitespace
       ~ syntax
       ~ optionalWhitespace
@@ -56,7 +55,9 @@ trait JsltParsingConstructs {
       ~ optionalWhitespace
       ~ closeParen)
 
-    lazy val array = (literal("[").unit("[")
+    lazy val optionalParen: Syntax[String, Char, Char, Value] = syntax.paren | syntax
+
+    lazy val array: Syntax[String, Char, Char, Value] = (literal("[").unit("[")
       ~ optionalWhitespace
       ~ syntax
       ~ optionalWhitespace

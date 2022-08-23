@@ -33,3 +33,4 @@ metals.sbt
 
 # custom
 out
+TempTest.scala
