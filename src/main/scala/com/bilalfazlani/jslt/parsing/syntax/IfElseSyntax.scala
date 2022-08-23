@@ -1,6 +1,6 @@
 package com.bilalfazlani.jslt.parsing.syntax
 
-import com.bilalfazlani.jslt.parsing.models.BooleanExpression.BooleanExtractor
+import com.bilalfazlani.jslt.parsing.models.BooleanExpression.{BooleanExtractor, JPathExpression}
 import com.bilalfazlani.jslt.parsing.models.Jslt.JIf
 import com.bilalfazlani.jslt.parsing.models.BooleanExpression
 import zio.parser.Syntax
@@ -16,7 +16,14 @@ trait IfElseSyntax {
       (x: BooleanExtractor) => x.path
     )
 
-  private lazy val booleanExpression = extractorSyntax.widen[BooleanExpression]
+  private lazy val jPathExpressionSyntax = jPathSyntax.transform(
+    path => JPathExpression(path),
+    (x: JPathExpression) => x.path
+  )
+
+  private lazy val booleanExpression =
+    extractorSyntax.widen[BooleanExpression] |
+      jPathExpressionSyntax.widen[BooleanExpression]
 
   private lazy val ifSyntax = (
     literal("if").unit("if")

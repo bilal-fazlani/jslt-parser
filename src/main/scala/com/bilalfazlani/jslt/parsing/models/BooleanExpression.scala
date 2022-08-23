@@ -42,5 +42,7 @@ object BooleanExpression {
   case class Not(expression: BooleanExpression) extends BooleanExpression
 
   case class BooleanExtractor(path: JPath) extends BooleanExpression
+
+  case class JPathExpression(path: JPath) extends BooleanExpression
 }
 

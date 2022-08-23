@@ -9,7 +9,7 @@ import zio.test._
 
 object IfElseParsingTest extends ZIOSpecDefault {
   def spec = suite("IfElseParsingTest")(
-    test("parse simple top level if else expression") {
+    test("parse boolean extractor top level if else expression") {
       val input =
         """if (boolean(.details.marriage))
           |  "yes"
@@ -18,6 +18,21 @@ object IfElseParsingTest extends ZIOSpecDefault {
           |""".stripMargin
       val expected = JIf(
         BooleanExpression.BooleanExtractor(JPath(JsltNode("details"), JsltNode("marriage"))),
+        JString("yes"),
+        Some(JString("no"))
+      )
+      val result = Jslt.parse(input)
+      assert(result)(isRight(equalTo(expected)))
+    },
+    test("parse jpath top level if else expression") {
+      val input =
+        """if (.details.marriage)
+          |  "yes"
+          |else
+          |  "no"
+          |""".stripMargin
+      val expected = JIf(
+        BooleanExpression.JPathExpression(JPath(JsltNode("details"), JsltNode("marriage"))),
         JString("yes"),
         Some(JString("no"))
       )
