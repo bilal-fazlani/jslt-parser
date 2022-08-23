@@ -16,7 +16,7 @@ object Jslt {
   case class JArray(items: Chunk[Jslt]) extends Jslt
   case class JObject(items: Map[String, Jslt]) extends Jslt
 
-  object JPrimitive {
+  object JValue {
     case class JString(value: String) extends JPrimitive
     case class JDouble(value: Double) extends JPrimitive
     case class JInteger(value: Int) extends JPrimitive

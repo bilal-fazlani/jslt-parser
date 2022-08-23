@@ -31,10 +31,10 @@ object FileSyntaxTest extends ZIOSpecDefault {
         Chunk.empty,
         JObject(
           Map(
-            "name" -> JPrimitive.JString("john"),
-            "age" -> JPrimitive.JDouble(30.2),
-            "rank" -> JPrimitive.JInteger(2),
-            "is_admin" -> JPrimitive.JBoolean(true),
+            "name" -> JValue.JString("john"),
+            "age" -> JValue.JDouble(30.2),
+            "rank" -> JValue.JInteger(2),
+            "is_admin" -> JValue.JBoolean(true),
             "path" -> JPath(Chunk(JsltNode("home"), JsltNode("john")))
           )
         )
@@ -54,10 +54,10 @@ object FileSyntaxTest extends ZIOSpecDefault {
         Chunk(JsltImport("transformers/abcs.jslt", "MyCustomProps")),
         JObject(
           Map(
-            "name" -> JPrimitive.JString("john"),
-            "age" -> JPrimitive.JDouble(30.2),
-            "rank" -> JPrimitive.JInteger(2),
-            "is_admin" -> JPrimitive.JBoolean(true),
+            "name" -> JValue.JString("john"),
+            "age" -> JValue.JDouble(30.2),
+            "rank" -> JValue.JInteger(2),
+            "is_admin" -> JValue.JBoolean(true),
             "path" -> JPath(Chunk(JsltNode("home"), JsltNode("john")))
           )
         )
@@ -81,10 +81,10 @@ object FileSyntaxTest extends ZIOSpecDefault {
         ),
         JObject(
           Map(
-            "name" -> JPrimitive.JString("john"),
-            "age" -> JPrimitive.JDouble(30.2),
-            "rank" -> JPrimitive.JInteger(2),
-            "is_admin" -> JPrimitive.JBoolean(true),
+            "name" -> JValue.JString("john"),
+            "age" -> JValue.JDouble(30.2),
+            "rank" -> JValue.JInteger(2),
+            "is_admin" -> JValue.JBoolean(true),
             "path" -> JPath(Chunk(JsltNode("home"), JsltNode("john")))
           )
         )
@@ -109,10 +109,10 @@ object FileSyntaxTest extends ZIOSpecDefault {
         ),
         JObject(
           Map(
-            "name" -> JPrimitive.JString("john"),
-            "age" -> JPrimitive.JDouble(30.2),
-            "rank" -> JPrimitive.JInteger(2),
-            "is_admin" -> JPrimitive.JBoolean(true),
+            "name" -> JValue.JString("john"),
+            "age" -> JValue.JDouble(30.2),
+            "rank" -> JValue.JInteger(2),
+            "is_admin" -> JValue.JBoolean(true),
             "path" -> JPath(Chunk(JsltNode("home"), JsltNode("john")))
           )
         )

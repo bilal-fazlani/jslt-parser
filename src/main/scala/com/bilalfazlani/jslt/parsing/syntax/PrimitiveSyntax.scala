@@ -1,7 +1,7 @@
 package com.bilalfazlani.jslt.parsing.syntax
 
-import com.bilalfazlani.jslt.parsing.models.Jslt.JPrimitive
-import com.bilalfazlani.jslt.parsing.models.Jslt.JPrimitive.{JBoolean, JDouble, JInteger, JString}
+import com.bilalfazlani.jslt.parsing.models.Jslt.JValue
+import com.bilalfazlani.jslt.parsing.models.Jslt.JValue.{JBoolean, JDouble, JInteger, JString}
 import com.bilalfazlani.jslt.parsing.models.JPrimitive
 import zio.Chunk
 import zio.parser.Syntax
@@ -11,14 +11,14 @@ trait PrimitiveSyntax extends JsltParsingConstructs {
   lazy val jStringSyntax: Syntax[String, Char, Char, JString] =
     anyStringCustom.quoted
       .transform(
-        x => JPrimitive.JString(x),
+        x => JValue.JString(x),
         (jString: JString) => s"${jString.value}"
       )
 
   lazy val jBooleanSyntax: Syntax[String, Char, Char, JBoolean] = Syntax
     .oneOf(literal("true"), literal("false"))
     .transform(
-      x => JPrimitive.JBoolean(x.toBoolean),
+      x => JValue.JBoolean(x.toBoolean),
       (jBool: JBoolean) => jBool.value.toString
     )
 
@@ -29,7 +29,7 @@ trait PrimitiveSyntax extends JsltParsingConstructs {
     }
 
     def toString(
-                  jNumber: JPrimitive.JDouble
+                  jNumber: JValue.JDouble
                 ): (Chunk[Char], Chunk[Char]) = {
       jNumber.value.toString.split("\\.").toList match {
         case h :: t :: Nil =>
@@ -39,7 +39,7 @@ trait PrimitiveSyntax extends JsltParsingConstructs {
 
     (digit.repeat ~ (literal(".").unit(".") ~ digit.repeat))
       .transform(
-        x => JPrimitive.JDouble(toDouble(x)),
+        x => JValue.JDouble(toDouble(x)),
         (double: JDouble) => toString(double)
       )
   }

@@ -1,6 +1,6 @@
 package com.bilalfazlani.jslt.parsing
 
-import com.bilalfazlani.jslt.parsing.models.Jslt.JPrimitive._
+import com.bilalfazlani.jslt.parsing.models.Jslt.JValue._
 import com.bilalfazlani.jslt.parsing.syntax.JsltSyntax
 import zio.test.Assertion._
 import zio.test._
