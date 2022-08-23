@@ -5,7 +5,7 @@ import com.bilalfazlani.jslt.parsing.models.Jslt
 import zio.Chunk
 import zio.parser.Syntax
 
-trait JsltSyntax extends PrimitiveSyntax with JPathSyntax with IfElseSyntax {
+trait JsltSyntax extends PrimitiveSyntax with JPathSyntax with IfElseSyntax with MethodCallSyntax {
 
   lazy val jArraySyntax: Syntax[String, Char, Char, JArray] =
     jsltSyntax
@@ -32,7 +32,8 @@ trait JsltSyntax extends PrimitiveSyntax with JPathSyntax with IfElseSyntax {
       jObjectSyntax.widen[Jslt] |
       jPrimitiveSyntax.widen[Jslt] |
       jPathSyntax.widen[Jslt] |
-      jIfElseSyntax.widen[Jslt]
+      jIfElseSyntax.widen[Jslt] |
+      jMethodCallSyntax.widen[Jslt]
 
   lazy val keySyntax: Syntax[String, Char, Char, String] =
     anyStringCustom.quoted
