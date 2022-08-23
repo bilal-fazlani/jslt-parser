@@ -1,5 +1,6 @@
-package com.bilalfazlani.jslt.parsing
+package com.bilalfazlani.jslt.parsing.models
 
+import com.bilalfazlani.jslt.parsing.syntax.JsltSyntax
 import zio.Chunk
 
 sealed trait Jslt

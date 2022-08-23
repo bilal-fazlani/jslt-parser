@@ -1,6 +1,7 @@
 package com.bilalfazlani.jslt.parsing
 
-import com.bilalfazlani.jslt.parsing.Jslt._
+import com.bilalfazlani.jslt.parsing.models.{Jslt, JsltNode}
+import com.bilalfazlani.jslt.parsing.models.Jslt._
 import zio.Chunk
 import zio.test.Assertion._
 import zio.test._

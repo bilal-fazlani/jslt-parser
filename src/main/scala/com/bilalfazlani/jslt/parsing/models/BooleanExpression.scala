@@ -1,5 +1,6 @@
-package com.bilalfazlani.jslt.parsing
+package com.bilalfazlani.jslt.parsing.models
 
+import com.bilalfazlani.jslt.parsing.models.Jslt.JPath
 
 sealed trait BinaryOperand
 
@@ -38,8 +39,8 @@ object BooleanExpression {
 
   case class Or(left: BooleanExpression, right: BooleanExpression) extends BooleanExpression
 
-  case class Not(right: BooleanExpression) extends BooleanExpression
+  case class Not(expression: BooleanExpression) extends BooleanExpression
 
-  case class BooleanExtractor(jslt: Jslt) extends BooleanExpression
+  case class BooleanExtractor(path: JPath) extends BooleanExpression
 }
 

@@ -1,5 +1,6 @@
-package com.bilalfazlani.jslt.parsing
+package com.bilalfazlani.jslt.parsing.models
 
+import com.bilalfazlani.jslt.parsing.syntax.JsltFileSyntax
 import zio.Chunk
 
 case class JsltImport(path: String, name: String)

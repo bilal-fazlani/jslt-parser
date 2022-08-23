@@ -1,12 +1,13 @@
-package com.bilalfazlani.jslt.parsing
+package com.bilalfazlani.jslt.parsing.syntax
 
-import com.bilalfazlani.jslt.parsing.Jslt.JPath
+import com.bilalfazlani.jslt.parsing.models.Jslt.JPath
+import com.bilalfazlani.jslt.parsing.models.JsltNode
 import zio.Chunk
 import zio.parser.Syntax
 import zio.parser.Syntax.alphaNumeric
 
 trait JPathSyntax extends JsltParsingConstructs {
-  def jPathSyntax: Syntax[String, Char, Char, JPath] =
+  lazy val jPathSyntax: Syntax[String, Char, Char, JPath] =
     literal(".").unit(".") ~ (alphaNumeric <> acceptableChars).repeat
       .transform(
         _.mkString,

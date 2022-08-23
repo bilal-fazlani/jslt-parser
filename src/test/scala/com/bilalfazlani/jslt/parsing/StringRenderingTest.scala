@@ -1,6 +1,7 @@
 package com.bilalfazlani.jslt.parsing
 
-import com.bilalfazlani.jslt.parsing.Jslt._
+import com.bilalfazlani.jslt.parsing.models.Jslt._
+import com.bilalfazlani.jslt.parsing.syntax.{JsltSyntax, PrimitiveSyntax}
 import zio.Chunk
 import zio.test.Assertion._
 import zio.test.TestAspect.ignore
