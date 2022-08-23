@@ -4,6 +4,7 @@ import com.bilalfazlani.jslt.parsing.models
 import com.bilalfazlani.jslt.parsing.models.{JsltFile, JsltImport}
 import zio.Chunk
 import zio.parser.Syntax.anyChar
+import zio.parser.SyntaxOps
 
 object JsltFileSyntax extends JsltSyntax {
   lazy val importSyntax = (literal("import").unit("import")

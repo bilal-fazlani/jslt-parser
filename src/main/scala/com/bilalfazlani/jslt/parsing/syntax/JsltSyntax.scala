@@ -4,6 +4,8 @@ import com.bilalfazlani.jslt.parsing.models.Jslt.{JArray, JObject}
 import com.bilalfazlani.jslt.parsing.models.Jslt
 import zio.Chunk
 import zio.parser.Syntax
+import zio.parser.SyntaxOps
+import zio.parser.StringErrSyntaxOps
 
 trait JsltSyntax extends PrimitiveSyntax with JPathSyntax with IfElseSyntax with MethodCallSyntax {
 

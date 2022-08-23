@@ -3,6 +3,7 @@ package com.bilalfazlani.jslt.parsing.syntax
 import zio.Chunk
 import zio.parser.Syntax
 import zio.parser.Syntax.{char, charIn, string, whitespace}
+import zio.parser.SyntaxOps
 
 trait JsltParsingConstructs {
   def literal(lit: => String): Syntax[String, Char, Char, String] =

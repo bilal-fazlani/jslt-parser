@@ -4,6 +4,7 @@ import com.bilalfazlani.jslt.parsing.models.Jslt.JMethodCall
 import zio.Chunk
 import zio.parser.Syntax
 import zio.parser.Syntax._
+import zio.parser.SyntaxOps
 
 trait MethodCallSyntax {
   this: JsltSyntax =>

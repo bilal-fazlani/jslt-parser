@@ -4,6 +4,8 @@ import com.bilalfazlani.jslt.parsing.models.BooleanExpression.{BooleanExtractor,
 import com.bilalfazlani.jslt.parsing.models.Jslt.JIf
 import com.bilalfazlani.jslt.parsing.models.BooleanExpression
 import zio.parser.Syntax
+import zio.parser.SyntaxOps
+import zio.parser.StringErrSyntaxOps
 
 trait IfElseSyntax {
   this: JsltSyntax =>

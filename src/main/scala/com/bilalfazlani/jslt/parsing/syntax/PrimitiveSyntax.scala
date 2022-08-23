@@ -6,6 +6,8 @@ import com.bilalfazlani.jslt.parsing.models.JPrimitive
 import zio.Chunk
 import zio.parser.Syntax
 import zio.parser.Syntax.digit
+import zio.parser.SyntaxOps
+import zio.parser.StringErrSyntaxOps
 
 trait PrimitiveSyntax extends JsltParsingConstructs {
   lazy val jStringSyntax: Syntax[String, Char, Char, JString] =

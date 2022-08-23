@@ -5,6 +5,7 @@ import com.bilalfazlani.jslt.parsing.models.JsltNode
 import zio.Chunk
 import zio.parser.Syntax
 import zio.parser.Syntax.alphaNumeric
+import zio.parser.SyntaxOps
 
 trait JPathSyntax extends JsltParsingConstructs {
   lazy val jPathSyntax: Syntax[String, Char, Char, JPath] =
