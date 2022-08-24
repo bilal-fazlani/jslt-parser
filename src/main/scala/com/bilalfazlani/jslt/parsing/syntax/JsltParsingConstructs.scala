@@ -32,7 +32,7 @@ trait JsltParsingConstructs {
   implicit class SyntaxExtensions[Value](
                                           syntax: => Syntax[String, Char, Char, Value]
                                         ) {
-    private lazy val memoized = syntax
+    private[parsing] lazy val memoized = syntax
 
     lazy val quoted: Syntax[String, Char, Char, Value] = memoized.between(
       literal("\"").unit("\""),

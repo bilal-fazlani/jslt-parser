@@ -1,6 +1,7 @@
 package com.bilalfazlani.jslt.parsing.models
 
 import com.bilalfazlani.jslt.parsing.models.Jslt.JPath
+import zio.Chunk
 
 sealed trait BinaryOperand
 

@@ -9,7 +9,7 @@ import zio.parser.SyntaxOps
 
 trait JPathSyntax extends JsltParsingConstructs {
 
-  private lazy val acceptableSymbols = charIn("_-")
+  private[parsing] lazy val acceptableSymbols = charIn("_-")
 
   lazy val jPathSyntax: Syntax[String, Char, Char, JPath] =
     literal(".").unit(".") ~ (alphaNumeric | acceptableSymbols).repeat

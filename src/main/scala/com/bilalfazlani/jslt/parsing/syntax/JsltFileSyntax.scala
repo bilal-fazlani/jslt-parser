@@ -21,5 +21,5 @@ object JsltFileSyntax extends JsltSyntax {
 
   lazy val fileSyntax: Syntax[String, Char, Char, JsltFile] =
     (importSyntax.repeat0 ~ optionalWhitespace ~ jObjectSyntax)
-      .of[JsltFile]
+      .of[JsltFile] ?? "jslt file"
 }

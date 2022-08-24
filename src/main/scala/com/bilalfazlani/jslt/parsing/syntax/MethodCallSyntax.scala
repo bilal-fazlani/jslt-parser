@@ -9,11 +9,11 @@ import zio.parser.SyntaxOps
 trait MethodCallSyntax {
   this: JsltSyntax =>
 
-  private lazy val importName = charNotIn('"', ':', '(')
+  private[parsing] lazy val importName = charNotIn('"', ':', '(')
     .repeat
     .transform(_.mkString, (str: String) => Chunk.fromIterable(str)) ?? "importName"
 
-  private lazy val methodName = charNotIn('"', ':', '(')
+  private[parsing] lazy val methodName = charNotIn('"', ':', '(')
     .repeat
     .transform(_.mkString, (str: String) => Chunk.fromIterable(str)) ?? "methodName"
 
