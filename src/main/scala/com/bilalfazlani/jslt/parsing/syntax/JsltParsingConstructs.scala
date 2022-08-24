@@ -32,35 +32,37 @@ trait JsltParsingConstructs {
   implicit class SyntaxExtensions[Value](
                                           syntax: => Syntax[String, Char, Char, Value]
                                         ) {
-    lazy val quoted: Syntax[String, Char, Char, Value] = syntax.between(
+    lazy val memoized = syntax
+
+    lazy val quoted: Syntax[String, Char, Char, Value] = memoized.between(
       literal("\"").unit("\""),
       literal("\"").unit("\"")
     )
 
     def separatedBy(separator: => Syntax[String, Char, Char, Unit]): Syntax[String, Char, Char, Chunk[Value]] =
-      syntax.repeatWithSep(
+      memoized.repeatWithSep(
         optionalWhitespace ~ separator ~ optionalWhitespace
       )
 
-    lazy val withTrailingComma: Syntax[String, Char, Char, Value] = syntax ~ comma.optional.unit(None)
+    lazy val withTrailingComma: Syntax[String, Char, Char, Value] = memoized ~ comma.optional.unit(None)
 
     lazy val curly: Syntax[String, Char, Char, Value] = (literal("{").unit("{")
       ~ optionalWhitespace
-      ~ syntax
+      ~ memoized
       ~ optionalWhitespace
       ~ literal("}").unit("}"))
 
     lazy val paren: Syntax[String, Char, Char, Value] = (openParen
       ~ optionalWhitespace
-      ~ syntax
+      ~ memoized
       ~ optionalWhitespace
       ~ closeParen)
 
-    lazy val optionalParen: Syntax[String, Char, Char, Value] = syntax.paren | syntax
+    lazy val optionalParen: Syntax[String, Char, Char, Value] = memoized.paren | memoized
 
     lazy val array: Syntax[String, Char, Char, Value] = (literal("[").unit("[")
       ~ optionalWhitespace
-      ~ syntax
+      ~ memoized
       ~ optionalWhitespace
       ~ literal("]").unit("]"))
   }
