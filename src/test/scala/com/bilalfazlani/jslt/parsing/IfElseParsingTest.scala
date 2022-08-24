@@ -1,11 +1,11 @@
 package com.bilalfazlani.jslt.parsing
 
-import com.bilalfazlani.jslt.parsing.models.BooleanExpression.{And, BooleanExtractor, JPathExpression, Or}
-import com.bilalfazlani.jslt.parsing.models.{BooleanExpression, Jslt, JsltNode}
+import com.bilalfazlani.jslt.parsing.models.BooleanExpression._
 import com.bilalfazlani.jslt.parsing.models.Jslt.JValue._
 import com.bilalfazlani.jslt.parsing.models.Jslt._
-import zio.Chunk
+import com.bilalfazlani.jslt.parsing.models.{Jslt, JsltNode}
 import zio.test.Assertion._
+import zio.test.TestAspect.ignore
 import zio.test._
 
 object IfElseParsingTest extends ZIOSpecDefault {
@@ -54,7 +54,7 @@ object IfElseParsingTest extends ZIOSpecDefault {
           |  "married"
           |""".stripMargin
       val expected = JIf(
-        BooleanExpression.Not(
+        Not(
           JPathExpression(
             JPath(JsltNode("details"), JsltNode("marriage"))
           )
@@ -86,7 +86,7 @@ object IfElseParsingTest extends ZIOSpecDefault {
       )
       val result = Jslt.parse(input)
       assert(result)(isRight(equalTo(expected)))
-    },
+    } @@ ignore,
     test("parse and boolean expression") {
       val input =
         """if (.details.marriage and boolean(.details.children))
@@ -108,7 +108,7 @@ object IfElseParsingTest extends ZIOSpecDefault {
       )
       val result = Jslt.parse(input)
       assert(result)(isRight(equalTo(expected)))
-    },
+    } @@ ignore,
     test("parse simple if else expression in an object") {
       val input =
         """{ "name": "john", "isMarried": if (boolean(.details.marriage)) "yes" else "no" }"""

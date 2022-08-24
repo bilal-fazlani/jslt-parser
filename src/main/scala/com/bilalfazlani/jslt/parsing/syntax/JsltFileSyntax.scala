@@ -1,13 +1,12 @@
 package com.bilalfazlani.jslt.parsing.syntax
 
-import com.bilalfazlani.jslt.parsing.models
 import com.bilalfazlani.jslt.parsing.models.{JsltFile, JsltImport}
 import zio.Chunk
 import zio.parser.Syntax.anyChar
-import zio.parser.SyntaxOps
+import zio.parser.{Syntax, SyntaxOps}
 
 object JsltFileSyntax extends JsltSyntax {
-  lazy val importSyntax = (literal("import").unit("import")
+  lazy val importSyntax: Syntax[String, Char, Char, JsltImport] = (literal("import").unit("import")
     ~ optionalWhitespace
     ~ anyStringCustom.quoted
     ~ optionalWhitespace
@@ -18,19 +17,9 @@ object JsltFileSyntax extends JsltSyntax {
     .transform(
       x => x.mkString,
       (str: String) => Chunk.fromIterable(str)
-    )).transform(
-    { case (path, name) =>
-      JsltImport(path, name)
-    },
-    (jImport: JsltImport) => (jImport.path, jImport.name)
-  )
+    )).of[JsltImport]
 
-  lazy val fileSyntax =
+  lazy val fileSyntax: Syntax[String, Char, Char, JsltFile] =
     (importSyntax.repeat0 ~ optionalWhitespace ~ jObjectSyntax)
-      .transform(
-        { case (imports, obj) =>
-          models.JsltFile(imports, obj)
-        },
-        (jslt: JsltFile) => (jslt.jsltImports, jslt.content)
-      )
+      .of[JsltFile]
 }

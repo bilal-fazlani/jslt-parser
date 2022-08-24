@@ -14,10 +14,7 @@ trait JsltSyntax extends PrimitiveSyntax with JPathSyntax with IfElseSyntax with
       .separatedBy(comma)
       .withTrailingComma
       .array
-      .transform(
-        items => JArray(items),
-        (arr: JArray) => arr.items
-      )
+      .of[JArray] ?? "array"
 
   lazy val jObjectSyntax: Syntax[String, Char, Char, JObject] =
     keyValueSyntax
@@ -27,7 +24,7 @@ trait JsltSyntax extends PrimitiveSyntax with JPathSyntax with IfElseSyntax with
       .transform(
         items => JObject(items.toMap),
         (obj: JObject) => Chunk.fromIterable(obj.items)
-      )
+      ) ?? "object"
 
   lazy val jsltSyntax: Syntax[String, Char, Char, Jslt] =
     (jArraySyntax.widen[Jslt] |
@@ -35,15 +32,14 @@ trait JsltSyntax extends PrimitiveSyntax with JPathSyntax with IfElseSyntax with
       jPrimitiveSyntax.widen[Jslt] |
       jPathSyntax.widen[Jslt] |
       jIfElseSyntax.widen[Jslt] |
-      jMethodCallSyntax.widen[Jslt]).optionalParen
+      jMethodCallSyntax.widen[Jslt]).optionalParen ?? "jslt"
 
   lazy val keySyntax: Syntax[String, Char, Char, String] =
-    anyStringCustom.quoted
-      .named("json key")
+    anyStringCustom.quoted.named("key")
 
   lazy val keyValueSyntax: Syntax[String, Char, Char, (String, Jslt)] = (keySyntax
     ~ optionalWhitespace
     ~ colon
     ~ optionalWhitespace
-    ~ jsltSyntax)
+    ~ jsltSyntax) ?? "key value"
 }

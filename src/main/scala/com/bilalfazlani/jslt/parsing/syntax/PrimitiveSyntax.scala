@@ -15,14 +15,14 @@ trait PrimitiveSyntax extends JsltParsingConstructs {
       .transform(
         x => JValue.JString(x),
         (jString: JString) => s"${jString.value}"
-      ).named("string")
+      ) ??"string"
 
   lazy val jBooleanSyntax: Syntax[String, Char, Char, JBoolean] = Syntax
     .oneOf(literal("true"), literal("false"))
     .transform(
       x => JValue.JBoolean(x.toBoolean),
       (jBool: JBoolean) => jBool.value.toString
-    ).named("boolean")
+    ) ?? "boolean"
 
   lazy val jDoubleSyntax: Syntax[String, Char, Char, JDouble] = {
     def toDouble(d: (Chunk[Char], Chunk[Char])): Double = d match {
@@ -44,7 +44,7 @@ trait PrimitiveSyntax extends JsltParsingConstructs {
       .transform(
         x => JValue.JDouble(toDouble(x)),
         (double: JDouble) => toString(double)
-      ).named("double")
+      ) ?? "double"
   }
 
   lazy val jIntegerSyntax: Syntax[String, Char, Char, JInteger] =
@@ -52,10 +52,10 @@ trait PrimitiveSyntax extends JsltParsingConstructs {
       .transform(
         x => JInteger(x.mkString.toInt),
         (int: JInteger) => Chunk.fromIterable(int.value.toString)
-      ).named("integer")
+      ) ?? "integer"
 
   lazy val jPrimitiveSyntax: Syntax[String, Char, Char, JPrimitive] =
     (jStringSyntax.widen[JPrimitive] | jBooleanSyntax
       .widen[JPrimitive] | jDoubleSyntax.widen[JPrimitive] | jIntegerSyntax
-      .widen[JPrimitive]).named("primitive value")
+      .widen[JPrimitive]) ?? "primitive value"
 }

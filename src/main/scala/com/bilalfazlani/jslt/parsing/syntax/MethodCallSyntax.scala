@@ -11,20 +11,17 @@ trait MethodCallSyntax {
 
   private lazy val importName = charNotIn('"', ':', '(')
     .repeat
-    .transform(_.mkString, (str: String) => Chunk.fromIterable(str))
+    .transform(_.mkString, (str: String) => Chunk.fromIterable(str)) ?? "importName"
 
   private lazy val methodName = charNotIn('"', ':', '(')
     .repeat
-    .transform(_.mkString, (str: String) => Chunk.fromIterable(str))
+    .transform(_.mkString, (str: String) => Chunk.fromIterable(str)) ?? "methodName"
 
   lazy val jMethodCallSyntax: Syntax[String, Char, Char, JMethodCall] = {
     (importName ~ optionalWhitespace
       ~ literal(":").unit(":") ~ optionalWhitespace
       ~ methodName ~ optionalWhitespace
       ~ jPathSyntax.separatedBy(comma).paren)
-      .transform(
-        { case (importName, methodName, jpath) => JMethodCall(importName, methodName, jpath) },
-        (jMethodCall: JMethodCall) => (jMethodCall.importName, jMethodCall.method, jMethodCall.args)
-      )
+      .of[JMethodCall] ?? "method call"
   }
 }

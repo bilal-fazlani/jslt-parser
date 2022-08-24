@@ -21,5 +21,5 @@ trait JPathSyntax extends JsltParsingConstructs {
       .transform(
         strs => JPath(Chunk.fromIterable(strs.map(JsltNode.apply))),
         (path: JPath) => path.nodes.map(_.toString)
-      )
+      ) ?? "jslt path"
 }
