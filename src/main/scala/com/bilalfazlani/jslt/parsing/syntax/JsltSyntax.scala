@@ -7,7 +7,7 @@ import zio.parser.Syntax
 import zio.parser.SyntaxOps
 import zio.parser.StringErrSyntaxOps
 
-trait JsltSyntax extends PrimitiveSyntax with JPathSyntax with IfElseSyntax with MethodCallSyntax {
+trait JsltSyntax extends LiteralSyntax with JPathSyntax with IfElseSyntax with MethodCallSyntax {
 
   lazy val jArraySyntax: Syntax[String, Char, Char, JArray] =
     jsltSyntax
@@ -29,7 +29,7 @@ trait JsltSyntax extends PrimitiveSyntax with JPathSyntax with IfElseSyntax with
   lazy val jsltSyntax: Syntax[String, Char, Char, Jslt] =
     (jArraySyntax.widen[Jslt] |
       jObjectSyntax.widen[Jslt] |
-      jPrimitiveSyntax.widen[Jslt] |
+      jLiteralSyntax.widen[Jslt] |
       jPathSyntax.widen[Jslt] |
       jIfElseSyntax.widen[Jslt] |
       jMethodCallSyntax.widen[Jslt]).optionalParen ?? "jslt"

@@ -5,7 +5,7 @@ import zio.Chunk
 
 sealed trait Jslt
 
-sealed trait JPrimitive extends Jslt
+sealed trait JLiteral extends Jslt
 
 object Jslt {
   case class JPath(nodes: Chunk[JsltNode]) extends Jslt
@@ -22,14 +22,14 @@ object Jslt {
 
   case class JObject(items: Map[String, Jslt]) extends Jslt
 
-  object JValue {
-    case class JString(value: String) extends JPrimitive
+  object JLiteral {
+    case class JString(value: String) extends JLiteral
 
-    case class JDouble(value: Double) extends JPrimitive
+    case class JDouble(value: Double) extends JLiteral
 
-    case class JInteger(value: Int) extends JPrimitive
+    case class JInteger(value: Int) extends JLiteral
 
-    case class JBoolean(value: Boolean) extends JPrimitive
+    case class JBoolean(value: Boolean) extends JLiteral
   }
 
   def parse(input: String) =

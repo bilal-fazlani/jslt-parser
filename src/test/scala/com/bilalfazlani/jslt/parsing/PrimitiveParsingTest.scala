@@ -1,7 +1,7 @@
 package com.bilalfazlani.jslt.parsing
 
 import com.bilalfazlani.jslt.parsing.models.Jslt
-import com.bilalfazlani.jslt.parsing.models.Jslt.JValue._
+import com.bilalfazlani.jslt.parsing.models.Jslt.JLiteral._
 import zio.test.Assertion._
 import zio.test._
 
