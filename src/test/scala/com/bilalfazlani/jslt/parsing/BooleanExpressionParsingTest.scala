@@ -1,13 +1,11 @@
 package com.bilalfazlani.jslt.parsing
 
+import com.bilalfazlani.jslt.parsing.models.ComparisonOperator.Equal
 import com.bilalfazlani.jslt.parsing.models.BooleanExpression._
 import com.bilalfazlani.jslt.parsing.models.Jslt.JLiteral._
 import com.bilalfazlani.jslt.parsing.models.Jslt._
-import com.bilalfazlani.jslt.parsing.models.JsltNode
-import com.bilalfazlani.jslt.parsing.syntax.{
-  BooleanExpressionSyntax,
-  JsltSyntax
-}
+import com.bilalfazlani.jslt.parsing.models.{ComparisonOperator, JsltNode}
+import com.bilalfazlani.jslt.parsing.syntax.{BooleanExpressionSyntax, JsltSyntax}
 import zio.Chunk
 import zio.test.Assertion._
 import zio.test._
@@ -158,8 +156,14 @@ object BooleanExpressionParsingTest
         "not(boolean(.details.marriage) or boolean(.details.children))"
       val expected = Not(
         Or(
-          MethodCall("boolean", JPath(JsltNode("details"), JsltNode("marriage"))),
-          MethodCall("boolean", JPath(JsltNode("details"), JsltNode("children")))
+          MethodCall(
+            "boolean",
+            JPath(JsltNode("details"), JsltNode("marriage"))
+          ),
+          MethodCall(
+            "boolean",
+            JPath(JsltNode("details"), JsltNode("children"))
+          )
         )
       )
       val result = booleanExpression.parseString(input)
@@ -171,6 +175,50 @@ object BooleanExpressionParsingTest
         And(BooleanLiteral(JBoolean(true)), BooleanLiteral(JBoolean(false)))
       val two = Or(one, BooleanLiteral(JBoolean(false)))
       val expected = And(two, BooleanLiteral(JBoolean(true)))
+      val result = booleanExpression.parseString(input)
+      assert(result)(isRight(equalTo(expected)))
+    },
+    test("parse equals condition for two integer literals") {
+      val input = "12 == 2"
+      val expected = Comparison(
+        JInteger(12),
+        Equal,
+        JInteger(2)
+      )
+      val result = booleanExpression.parseString(input)
+      assert(result)(isRight(equalTo(expected)))
+    },
+    test("parse and of comparison") {
+      val input = "\"a\" != \"b\" and .firstname == .lastname"
+      val expected = And(
+        Comparison(
+          JString("a"),
+          ComparisonOperator.NotEqual,
+          JString("b")
+        ),
+        Comparison(
+          JPath(JsltNode("firstname")),
+          ComparisonOperator.Equal,
+          JPath(JsltNode("lastname"))
+        )
+      )
+      val result = booleanExpression.parseString(input)
+      assert(result)(isRight(equalTo(expected)))
+    },
+    test("parse and of comparison with parenthesis") {
+      val input = "(\"a\" != \"b\") and (.firstname == .lastname)"
+      val expected = And(
+        Comparison(
+          JString("a"),
+          ComparisonOperator.NotEqual,
+          JString("b")
+        ),
+        Comparison(
+          JPath(JsltNode("firstname")),
+          ComparisonOperator.Equal,
+          JPath(JsltNode("lastname"))
+        )
+      )
       val result = booleanExpression.parseString(input)
       assert(result)(isRight(equalTo(expected)))
     }

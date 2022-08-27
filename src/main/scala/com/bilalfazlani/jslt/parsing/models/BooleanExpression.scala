@@ -6,27 +6,27 @@ import zio.Chunk
 import com.bilalfazlani.jslt.parsing.syntax.JsltParsingConstructs
 import com.bilalfazlani.jslt.parsing.syntax.JsltSyntax
 
-sealed trait BinaryOperator
+sealed trait ComparisonOperator
 
-object BinaryOperator {
-  case object GreaterThan extends BinaryOperator
+object ComparisonOperator {
+  case object GreaterThan extends ComparisonOperator
 
-  case object LessThan extends BinaryOperator
+  case object LessThan extends ComparisonOperator
 
-  case object GreaterThanOrEqual extends BinaryOperator
+  case object GreaterThanOrEqual extends ComparisonOperator
 
-  case object LessThanOrEqual extends BinaryOperator
+  case object LessThanOrEqual extends ComparisonOperator
 
-  case object Equal extends BinaryOperator
+  case object Equal extends ComparisonOperator
 
-  case object NotEqual extends BinaryOperator
+  case object NotEqual extends ComparisonOperator
 }
 
 sealed trait BooleanExpression
 
 object BooleanExpression {
 
-  case class Condition(left: Jslt, operator: BinaryOperator, right: Jslt)
+  case class Comparison(left: Jslt, operator: ComparisonOperator, right: Jslt)
       extends BooleanExpression
 
   case class And(left: BooleanExpression, right: BooleanExpression)
