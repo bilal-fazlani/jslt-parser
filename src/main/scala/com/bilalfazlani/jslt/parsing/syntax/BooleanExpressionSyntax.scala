@@ -1,6 +1,6 @@
 package com.bilalfazlani.jslt.parsing.syntax
 
-import com.bilalfazlani.jslt.parsing.models.BooleanExpression
+import com.bilalfazlani.jslt.parsing.models.{BooleanExpression, Jslt}
 import com.bilalfazlani.jslt.parsing.models.BooleanExpression._
 import com.bilalfazlani.jslt.parsing.models.Jslt.JLiteral.JBoolean
 import com.bilalfazlani.jslt.parsing.models.Jslt.JPath
@@ -20,9 +20,10 @@ trait BooleanTokenSyntax extends JsltParsingConstructs {
       extends NonLeftRecursiveToken
 
   protected[syntax] case class NotToken(expression: BooleanToken)
-      extends NonLeftRecursiveToken
-  protected[syntax] case class ConverterToken(value: JPath)
-      extends NonLeftRecursiveToken
+    extends NonLeftRecursiveToken
+
+  protected[syntax] case class MethodCallToken(name: String, args: Chunk[Jslt])
+    extends NonLeftRecursiveToken
 
   protected[syntax] case class LeftRecursiveToken(
       head: NonLeftRecursiveToken,
@@ -38,8 +39,9 @@ trait BooleanTokenSyntax extends JsltParsingConstructs {
   protected[syntax] case object AndToken extends BooleanOperator
   protected[syntax] case object OrToken extends BooleanOperator
 
-  protected[syntax] lazy val valueSyntax
-      : Syntax[String, Char, Char, BooleanValue] = jBooleanSyntax.of[BooleanValue]
+  protected[syntax] lazy val booleanLiteralSyntax
+      : Syntax[String, Char, Char, BooleanValue] =
+    jBooleanSyntax.of[BooleanValue]
 
   protected[syntax] lazy val pathSyntax
       : Syntax[String, Char, Char, JPathValue] =
@@ -47,10 +49,10 @@ trait BooleanTokenSyntax extends JsltParsingConstructs {
 
   protected[syntax] lazy val nonLeftRecursiveSyntax
       : Syntax[String, Char, Char, NonLeftRecursiveToken] =
-    pathSyntax.widen[NonLeftRecursiveToken] |
-      valueSyntax.widen[NonLeftRecursiveToken] |
-      converterSyntax.widen[NonLeftRecursiveToken] |
-      notSyntax.widen[NonLeftRecursiveToken]
+    notSyntax.widen[NonLeftRecursiveToken] |
+    methodCallSyntax.widen[NonLeftRecursiveToken] |
+      pathSyntax.widen[NonLeftRecursiveToken] |
+      booleanLiteralSyntax.widen[NonLeftRecursiveToken]
 
   protected[syntax] lazy val operatorSyntax
       : Syntax[String, Char, Char, BooleanOperator] =
@@ -73,12 +75,12 @@ trait BooleanTokenSyntax extends JsltParsingConstructs {
     (literal("not").unit("not") ~ optionalWhitespace ~ tokenSyntax.paren)
       .of[NotToken] ?? "not"
 
-  protected[syntax] lazy val converterSyntax
-      : Syntax[String, Char, Char, ConverterToken] =
-    (literal("boolean").unit(
-      "boolean"
-    ) ~ optionalWhitespace ~ jPathSyntax.paren)
-      .of[ConverterToken] ?? "boolean converter"
+  protected[syntax] lazy val methodCallSyntax
+      : Syntax[String, Char, Char, MethodCallToken] =
+    ((alphaNumeric | acceptableSymbols).repeat.mkString ~ optionalWhitespace ~ jsltSyntax
+      .separatedBy(comma)
+      .paren).of[MethodCallToken] ?? "method call"
+
 
   protected[syntax] lazy val tokenSyntax
       : Syntax[String, Char, Char, BooleanToken] = {
@@ -96,10 +98,10 @@ trait BooleanExpressionSyntax
       token: BooleanToken
   ): BooleanExpression =
     token match {
-      case BooleanValue(value)   => BooleanLiteral(value)
-      case JPathValue(value)     => JPathExpression(value)
-      case NotToken(expression)  => Not(transformLeftToRight(expression))
-      case ConverterToken(value) => BooleanConverter(value)
+      case BooleanValue(value)         => BooleanLiteral(value)
+      case JPathValue(value)           => JPathExpression(value)
+      case NotToken(expression)        => Not(transformLeftToRight(expression))
+      case MethodCallToken(name, args) => MethodCall(name, args)
       case LeftRecursiveToken(head, tail) =>
         tail.foldLeft[BooleanExpression](transformLeftToRight(head)) {
           case (lhs, Pair(AndToken, rhs)) => And(lhs, transformLeftToRight(rhs))

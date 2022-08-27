@@ -11,11 +11,11 @@ trait MethodCallSyntax {
 
   private[parsing] lazy val importName = charNotIn('"', ':', '(')
     .repeat
-    .transform(_.mkString, (str: String) => Chunk.fromIterable(str)) ?? "importName"
+    .mkString ?? "importName"
 
   private[parsing] lazy val methodName = charNotIn('"', ':', '(')
     .repeat
-    .transform(_.mkString, (str: String) => Chunk.fromIterable(str)) ?? "methodName"
+    .mkString ?? "methodName"
 
   lazy val jMethodCallSyntax: Syntax[String, Char, Char, JMethodCall] = {
     (importName ~ optionalWhitespace

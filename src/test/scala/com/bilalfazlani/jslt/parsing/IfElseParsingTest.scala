@@ -21,9 +21,7 @@ object IfElseParsingTest extends ZIOSpecDefault {
           |  "no"
           |""".stripMargin
       val expected = JIf(
-        BooleanConverter(
-          JPath(JsltNode("details"), JsltNode("marriage"))
-        ),
+        MethodCall("boolean", JPath(JsltNode("details"), JsltNode("marriage"))),
         JString("yes"),
         Some(JString("no"))
       )
@@ -78,7 +76,7 @@ object IfElseParsingTest extends ZIOSpecDefault {
           JPathExpression(
             JPath(JsltNode("details"), JsltNode("marriage"))
           ),
-          BooleanConverter(
+          MethodCall("boolean",
             JPath(JsltNode("details"), JsltNode("children"))
           )
         ),
@@ -88,9 +86,9 @@ object IfElseParsingTest extends ZIOSpecDefault {
       val result = Jslt.parse(input)
       assert(result)(isRight(equalTo(expected)))
     },
-    test("parse and boolean expression") {
+    test("parse and exists expression") {
       val input =
-        """if (.details.marriage and boolean(.details.children))
+        """if (.details.marriage and exists(.details.children))
             |  "children"
             |else
             |  "no children"
@@ -100,7 +98,7 @@ object IfElseParsingTest extends ZIOSpecDefault {
           JPathExpression(
             JPath(JsltNode("details"), JsltNode("marriage"))
           ),
-          BooleanConverter(
+          MethodCall("exists",
             JPath(JsltNode("details"), JsltNode("children"))
           )
         ),
@@ -112,12 +110,12 @@ object IfElseParsingTest extends ZIOSpecDefault {
     },
     test("parse simple if else expression in an object") {
       val input =
-        """{ "name": "john", "isMarried": if (boolean(.details.marriage)) "yes" else "no" }"""
+        """{ "name": "john", "isMarried": if (exists(.details.marriage)) "yes" else "no" }"""
       val expected = JObject(
         Map(
           "name" -> JString("john"),
           "isMarried" -> JIf(
-            BooleanConverter(
+            MethodCall("exists",
               JPath(JsltNode("details"), JsltNode("marriage"))
             ),
             JString("yes"),

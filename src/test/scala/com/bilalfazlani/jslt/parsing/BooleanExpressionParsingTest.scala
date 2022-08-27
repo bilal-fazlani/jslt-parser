@@ -1,16 +1,15 @@
 package com.bilalfazlani.jslt.parsing
 
 import com.bilalfazlani.jslt.parsing.models.BooleanExpression._
-import com.bilalfazlani.jslt.parsing.models.Jslt
 import com.bilalfazlani.jslt.parsing.models.Jslt.JLiteral._
 import com.bilalfazlani.jslt.parsing.models.Jslt._
 import com.bilalfazlani.jslt.parsing.models.JsltNode
-import com.bilalfazlani.jslt.parsing.syntax.BooleanExpressionSyntax
-import com.bilalfazlani.jslt.parsing.syntax.IfElseSyntax
-import com.bilalfazlani.jslt.parsing.syntax.JsltSyntax
+import com.bilalfazlani.jslt.parsing.syntax.{
+  BooleanExpressionSyntax,
+  JsltSyntax
+}
 import zio.Chunk
 import zio.test.Assertion._
-import zio.test.TestAspect.ignore
 import zio.test._
 
 object BooleanExpressionParsingTest
@@ -22,7 +21,7 @@ object BooleanExpressionParsingTest
       val input =
         "boolean(.details.marriage)"
       val expected =
-        BooleanConverter(JPath(JsltNode("details"), JsltNode("marriage")))
+        MethodCall("boolean", JPath(JsltNode("details"), JsltNode("marriage")))
       val result = booleanExpression.parseString(input)
       assert(result)(isRight(equalTo(expected)))
     },
@@ -153,8 +152,8 @@ object BooleanExpressionParsingTest
         "not(boolean(.details.marriage) or boolean(.details.children))"
       val expected = Not(
         Or(
-          BooleanConverter(JPath(JsltNode("details"), JsltNode("marriage"))),
-          BooleanConverter(JPath(JsltNode("details"), JsltNode("children")))
+          MethodCall("boolean", JPath(JsltNode("details"), JsltNode("marriage"))),
+          MethodCall("boolean", JPath(JsltNode("details"), JsltNode("children")))
         )
       )
       val result = booleanExpression.parseString(input)
@@ -162,7 +161,8 @@ object BooleanExpressionParsingTest
     },
     test("parse and of or of and of boolean literals") {
       val input = "true and false or false and true"
-      val one = And(BooleanLiteral(JBoolean(true)), BooleanLiteral(JBoolean(false)))
+      val one =
+        And(BooleanLiteral(JBoolean(true)), BooleanLiteral(JBoolean(false)))
       val two = Or(one, BooleanLiteral(JBoolean(false)))
       val expected = And(two, BooleanLiteral(JBoolean(true)))
       val result = booleanExpression.parseString(input)

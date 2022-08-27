@@ -22,23 +22,11 @@ object BinaryOperator {
   case object NotEqual extends BinaryOperator
 }
 
-sealed trait UnaryOperator
-
-object UnaryOperator {
-
-  case object NotNull extends UnaryOperator
-
-  case object Exists extends UnaryOperator
-}
-
 sealed trait BooleanExpression
 
 object BooleanExpression {
 
   case class Condition(left: Jslt, operator: BinaryOperator, right: Jslt)
-      extends BooleanExpression
-
-  case class UnaryCondition(operator: UnaryOperator, right: Jslt)
       extends BooleanExpression
 
   case class And(left: BooleanExpression, right: BooleanExpression)
@@ -49,9 +37,12 @@ object BooleanExpression {
 
   case class Not(expression: BooleanExpression) extends BooleanExpression
 
-  case class BooleanConverter(path: JPath) extends BooleanExpression
-
   case class JPathExpression(path: JPath) extends BooleanExpression
 
   case class BooleanLiteral(value: JBoolean) extends BooleanExpression
+
+  case class MethodCall(name: String, args: Chunk[Jslt]) extends BooleanExpression
+  object MethodCall{
+    def apply(name: String, arg: Jslt, args: Jslt*): MethodCall = MethodCall(name, Chunk(arg) ++ args)
+  }
 }

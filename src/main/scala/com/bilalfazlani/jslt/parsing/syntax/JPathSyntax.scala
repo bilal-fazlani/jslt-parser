@@ -13,10 +13,7 @@ trait JPathSyntax extends JsltParsingConstructs {
 
   lazy val jPathSyntax: Syntax[String, Char, Char, JPath] =
     literal(".").unit(".") ~ (alphaNumeric | acceptableSymbols).repeat
-      .transform(
-        _.mkString,
-        (str: String) => Chunk.fromIterable(str)
-      )
+      .mkString
       .repeatWithSep(literal(".").unit("."))
       .transform(
         strs => JPath(Chunk.fromIterable(strs.map(JsltNode.apply))),

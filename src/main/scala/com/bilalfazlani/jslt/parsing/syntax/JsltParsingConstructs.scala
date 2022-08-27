@@ -21,17 +21,18 @@ trait JsltParsingConstructs {
   lazy val closeParen = optionalWhitespace ~ literal(")").unit(")")
 
   lazy val anyStringCustom: Syntax[String, Char, Char, String] =
-    Syntax.notChar('"')
+    Syntax
+      .notChar('"')
       .repeat
-      .transform(_.mkString, str => Chunk.fromIterable(str))
+      .mkString
 
   lazy val comma: Syntax[String, Char, Char, Unit] = literal(",").unit(", ")
 
   lazy val colon: Syntax[String, Char, Char, Unit] = literal(":").unit(": ")
 
   implicit class SyntaxExtensions[Value](
-                                          syntax: => Syntax[String, Char, Char, Value]
-                                        ) {
+      syntax: => Syntax[String, Char, Char, Value]
+  ) {
     private[parsing] lazy val memoized = syntax
 
     lazy val quoted: Syntax[String, Char, Char, Value] = memoized.between(
@@ -39,12 +40,26 @@ trait JsltParsingConstructs {
       literal("\"").unit("\"")
     )
 
-    def separatedBy(separator: => Syntax[String, Char, Char, Unit]): Syntax[String, Char, Char, Chunk[Value]] =
+    /**
+     * Converts a `Syntax[Chunk[Char]]` to a `Syntax[String]`
+     */
+    def mkString(implicit
+        ev: Value =:= Chunk[Char]
+    ): Syntax[String, Char, Char, String] =
+      memoized.transform[String](
+        x => ev(x).mkString,
+        str => ev.flip.apply(Chunk.fromIterable(str))
+      )
+
+    def separatedBy(
+        separator: => Syntax[String, Char, Char, Unit]
+    ): Syntax[String, Char, Char, Chunk[Value]] =
       memoized.repeatWithSep(
         optionalWhitespace ~ separator ~ optionalWhitespace
       )
 
-    lazy val withTrailingComma: Syntax[String, Char, Char, Value] = memoized ~ comma.optional.unit(None)
+    lazy val withTrailingComma: Syntax[String, Char, Char, Value] =
+      memoized ~ comma.optional.unit(None)
 
     lazy val curly: Syntax[String, Char, Char, Value] = (literal("{").unit("{")
       ~ optionalWhitespace
@@ -58,7 +73,8 @@ trait JsltParsingConstructs {
       ~ optionalWhitespace
       ~ closeParen)
 
-    lazy val optionalParen: Syntax[String, Char, Char, Value] = memoized.paren | memoized
+    lazy val optionalParen: Syntax[String, Char, Char, Value] =
+      memoized.paren | memoized
 
     lazy val array: Syntax[String, Char, Char, Value] = (literal("[").unit("[")
       ~ optionalWhitespace
