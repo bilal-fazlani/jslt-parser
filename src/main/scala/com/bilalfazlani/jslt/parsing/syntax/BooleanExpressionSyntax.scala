@@ -62,7 +62,7 @@ trait BooleanTokenSyntax extends JsltParsingConstructs {
     (nonLeftRecursiveSyntax ~ (operatorSyntax ~ nonLeftRecursiveSyntax).repeat)
       .transform[LeftRecursiveToken](
         { case (head, tail) =>
-          LeftRecursiveToken(head, tail.map(Pair.tupled))
+          LeftRecursiveToken(head, tail.map((Pair.apply _).tupled))
         },
         { case LeftRecursiveToken(head, tail) =>
           (head, tail.map(p => (p.operator, p.operand)))
