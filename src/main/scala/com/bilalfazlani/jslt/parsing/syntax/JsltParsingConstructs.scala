@@ -6,6 +6,8 @@ import zio.parser.Syntax.{char, charIn, string, whitespace}
 import zio.parser.SyntaxOps
 
 trait JsltParsingConstructs {
+  private[parsing] lazy val acceptableSymbols = charIn("_-")
+
   def literal(lit: => String): Syntax[String, Char, Char, String] =
     string(lit, lit)
 

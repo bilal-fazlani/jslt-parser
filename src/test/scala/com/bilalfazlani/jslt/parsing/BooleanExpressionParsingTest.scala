@@ -46,6 +46,12 @@ object BooleanExpressionParsingTest
       val result = booleanExpression.parseString(input)
       assert(result)(isRight(equalTo(expected)))
     },
+    test("parse is-object of path expression") {
+      val input = "is-object(.details)"
+      val expected = MethodCall("is-object", JPath(JsltNode("details")))
+      val result = booleanExpression.parseString(input)
+      assert(result)(isRight(equalTo(expected)))
+    },
     test("parse and expression") {
       val input = ".details.marriage and false"
       val expected =
