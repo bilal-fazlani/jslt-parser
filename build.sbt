@@ -1,8 +1,8 @@
-val scala3Version = "3.1.3"
+val scala3Version = "3.2.0"
 val scala2Version = "2.13.8"
 
 ThisBuild / scalaVersion := scala2Version
-ThisBuild / crossScalaVersions := List(scala2Version, scala3Version)
+ThisBuild / crossScalaVersions := List(scala3Version)
 ThisBuild / organization := "com.bilal-fazlani"
 ThisBuild / organizationName := "Bilal Fazlani"
 ThisBuild / scmInfo := Some(
